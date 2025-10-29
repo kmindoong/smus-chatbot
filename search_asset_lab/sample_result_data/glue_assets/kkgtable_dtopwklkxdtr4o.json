@@ -1,0 +1,67 @@
+{
+  "identifier": "dtopwklkxdtr4o",
+  "name": "kkgtable",
+  "project": "admin-project-533616270150",
+  "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+  "metadata": {
+    "ResponseMetadata": {
+      "RequestId": "b2cbe59d-9bcd-4ef6-8df5-c47913119f5c",
+      "HTTPStatusCode": 200,
+      "HTTPHeaders": {
+        "content-type": "application/json",
+        "content-length": "2156",
+        "connection": "keep-alive",
+        "date": "Wed, 29 Oct 2025 06:16:08 GMT",
+        "x-amzn-trace-id": "Root=1-6901b128-427968f0176b635c4f051cb3",
+        "x-amzn-requestid": "b2cbe59d-9bcd-4ef6-8df5-c47913119f5c",
+        "x-amz-apigw-id": "TMieXFN1IE0ENqQ=",
+        "x-cache": "Miss from cloudfront",
+        "via": "1.1 64238c1e409ec4df6b2aae4502dae038.cloudfront.net (CloudFront)",
+        "x-amz-cf-pop": "IAD55-P7",
+        "x-amz-cf-id": "D88BqU_dBugz3-BIQZFczT_A_UsunQrT27kiUAkMwRegWmr4nN9gjw=="
+      },
+      "RetryAttempts": 0
+    },
+    "createdAt": "2025-10-13 14:29:28.094000+09:00",
+    "createdBy": "SYSTEM",
+    "domainId": "dzd-cjvglgj4d43fmg",
+    "externalIdentifier": "arn:aws:glue:ap-northeast-2:533616270150:table/s3tablescatalog/kgkang-s3-table/kkgns/kkgtable.akis412ankp388",
+    "firstRevisionCreatedAt": "2025-10-13 14:29:28.094000+09:00",
+    "firstRevisionCreatedBy": "SYSTEM",
+    "formsOutput": [
+      {
+        "content": "{\"catalogId\":\"533616270150:s3tablescatalog/kgkang-s3-table\",\"columns\":[{\"dataType\":\"int\",\"columnName\":\"id\"},{\"dataType\":\"string\",\"columnName\":\"name\"},{\"dataType\":\"int\",\"columnName\":\"value\"}],\"sourceLocation\":\"s3://274f6ce8-b4fb-4c29-13gta3c4i8tym754eh1n6q496919capn2b--table-s3\",\"updateTime\":\"2025-03-13T14:08:44.970Z\",\"federatedTable\":{\"databaseIdentifier\":\"kkgns\",\"identifier\":\"kkgtable\",\"connectionName\":\"aws:s3tables\"},\"region\":\"ap-northeast-2\",\"tableArn\":\"arn:aws:glue:ap-northeast-2:533616270150:table/s3tablescatalog/kgkang-s3-table/kkgns/kkgtable\",\"tableName\":\"kkgtable\"}",
+        "formName": "GlueTableForm",
+        "typeName": "amazon.datazone.GlueTableFormType",
+        "typeRevision": "10"
+      },
+      {
+        "content": "{\"dataSourceIdentifier\":{\"id\":\"ahbvl5b0at4p3s\",\"version\":\"latest\"},\"filterableDataSourceId\":\"ahbvl5b0at4p3s\",\"dataSourceRunId\":\"d194sgb0rg3920\",\"dataSourceType\":\"GLUE\"}",
+        "formName": "DataSourceReferenceForm",
+        "typeName": "amazon.datazone.DataSourceReferenceFormType",
+        "typeRevision": "3"
+      },
+      {
+        "content": "{\"approvalRequired\":\"YES\"}",
+        "formName": "SubscriptionTermsForm",
+        "typeName": "amazon.datazone.SubscriptionTermsFormType",
+        "typeRevision": "2"
+      },
+      {
+        "content": "{\"sourceIdentifier\":\"arn:aws:glue:ap-northeast-2:533616270150:table/s3tablescatalog/kgkang-s3-table/kkgns/kkgtable\"}",
+        "formName": "AssetCommonDetailsForm",
+        "typeName": "amazon.datazone.AssetCommonDetailsFormType",
+        "typeRevision": "3"
+      }
+    ],
+    "id": "dtopwklkxdtr4o",
+    "latestTimeSeriesDataPointFormsOutput": [],
+    "name": "kkgtable",
+    "owningProjectId": "akis412ankp388",
+    "readOnlyFormsOutput": [],
+    "revision": "1",
+    "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+    "typeRevision": "13"
+  },
+  "schema": null
+}
