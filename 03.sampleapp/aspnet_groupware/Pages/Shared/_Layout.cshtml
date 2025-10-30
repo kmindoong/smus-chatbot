@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - aspnet_groupware</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/aspnet_groupware.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">aspnet_groupware</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - aspnet_groupware - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <style>
+        .chatbot-toggler {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff; /* 파란색 아이콘 */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1050; /* 다른 요소 위에 표시 */
+        }
+    </style>
+
+    <div class="chatbot-toggler" data-bs-toggle="modal" data-bs-target="#chatbotModal">
+        <i class="bi bi-chat-dots"></i> </div>
+
+    <div class="modal fade" id="chatbotModal" tabindex="-1" aria-labelledby="chatbotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatbotModalLabel">🤖 사내 챗봇</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 0; height: 75vh;"> 
+                    <iframe 
+                        id="chatbot-iframe"
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0"
+                        src=""> </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 📢 1단계에서 확인한 Streamlit 앱의 로컬 개발 URL (기본값: 8501)
+        var streamlitAppUrl = 'http://localhost:8501'; 
+        var chatbotModal = document.getElementById('chatbotModal');
+        var iframe = document.getElementById('chatbot-iframe');
+
+        // 모달이 열릴 때 (shown.bs.modal 이벤트) iframe에 Streamlit URL을 설정
+        chatbotModal.addEventListener('shown.bs.modal', function () {
+            iframe.src = streamlitAppUrl;
+        });
+
+        // 모달이 닫힐 때 (hidden.bs.modal 이벤트) iframe의 src를 비워서 리소스 정리
+        chatbotModal.addEventListener('hidden.bs.modal', function () {
+            iframe.src = '';
+        });
+    </script>
+</body>
+</html>
