@@ -28,8 +28,13 @@ auth = AWS4Auth(
 # ==============================
 client_dz = boto3.client("datazone", region_name=region)
 
+# 앱이 로드될 때 ASP.NET이 전달한 ?username=... 값을 읽어옵니다.
+query_params = st.query_params
+
+# .get("키", [기본값])[0] -> 'username' 파라미터가 없으면 '게스트'를 사용
+user_email = query_params.get("username", ["게스트"])
+st.write(f"디버깅: 현재 사용자 이메일 = {user_email}, 길이 = {len(user_email)}")
 # 사용자 조회
-user_email = "jh.bae@sk.com"
 resp_users = client_dz.search_user_profiles(
     domainIdentifier=domain_id,
     userType="DATAZONE_IAM_USER",
