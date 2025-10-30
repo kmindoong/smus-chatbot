@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("aspnet_groupware")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4b0ba18040274977dd40d45c75af242fe4dd113")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+37cd8264240af62780c1b465ba83b87e6a5430cf")]
 [assembly: System.Reflection.AssemblyProductAttribute("aspnet_groupware")]
 [assembly: System.Reflection.AssemblyTitleAttribute("aspnet_groupware")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
