@@ -1,68 +1,72 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware # CORS 처리를 위해
+from fastapi.middleware.cors import CORSMiddleware
 import time
+from fastapi.responses import FileResponse # ★ 1. FileResponse 임포트
+from pathlib import Path # ★ 2. Path 임포트
 
 # 1. FastAPI 앱 인스턴스 생성
 app = FastAPI()
 
+# ★ 3. 프론트엔드 파일 경로 설정
+# (fastapi_app.py 기준, 상위 폴더로 나간 뒤 frontend 폴더)
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
 # 2. CORS (Cross-Origin Resource Sharing) 설정
-# index.html(다른 도메인)에서 오는 API 요청을 허용해야 합니다.
+# (기존과 동일)
 origins = [
     "http://localhost",
     "http://localhost:8080",
-    "null", # 로컬에서 file:// 로 index.html을 열 경우
-    "*"     # (보안상 실제 배포 시에는 "*" 대신 .NET 포털 도메인을 넣어야 합니다)
+    "null", 
+    "*"     # (배포 후에는 EB URL로 변경)
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # 모든 HTTP 메소드 허용
-    allow_headers=["*"], # 모든 헤더 허용
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 3. 요청(Request) 바디 모델 정의
-# JavaScript가 {"message": "안녕하세요"} 형태로 보낼 것입니다.
 class ChatRequest(BaseModel):
     message: str
-    # (추가) 나중에 사용자 ID나 대화 기록을 받을 수 있습니다.
-    # user_id: str
-    # history: list
 
 # 4. 응답(Response) 바디 모델 정의
 class ChatResponse(BaseModel):
     response: str
 
-# 5. (핵심) /chat API 엔드포인트 생성
+# 5. /chat API 엔드포인트
 @app.post("/chat", response_model=ChatResponse)
 async def chat_with_bot(request: ChatRequest):
-    """
-    사용자의 채팅 메시지를 받아 봇의 응답을 반환합니다.
-    """
+    # (기존과 동일 - 가짜 답변 로직)
     user_prompt = request.message
-    
-    # 0.5초 생각하는 척 (LLM 호출 시뮬레이션)
     time.sleep(0.5) 
     
-    # Streamlit에 있던 가짜 답변 로직
-    if user_prompt == "강의 계획서 찾아줘":
-        bot_response = "강의 계획서 조회 메뉴로 안내해 드릴게요. [여기]를 클릭하세요."
-    elif user_prompt == "휴학 신청은 어떻게 해?":
-        bot_response = "휴학 신청은 [학사정보시스템 > 학적변동] 메뉴에서 하실 수 있습니다."
-    elif user_prompt == "성적 조회 알려줘":
-        bot_response = "이번 학기 성적 조회는 7월 25일부터 가능합니다."
+    if user_prompt == "담당자 정보 알려줘":
+        bot_response = "담당자 정보입니다: 챗봇 운영 (김OO 매니저), 데이터 분석 (이XX 매니저)"
+    elif user_prompt == "데이터를 활용하고 싶은데 신청 방법은?":
+        bot_response = "데이터 활용 신청은 '통합데이터분석환경' 포털을 통해 가능합니다. 하단 링크를 클릭해 주세요."
+    elif user_prompt == "안전보건 데이터를 확인하고 싶어, 어떤 테이블을 확인해야해?":
+        bot_response = "안전보건 데이터는 'HSE_DAILY_REPORT' 테이블과 'SAFETY_ACCIDENT_LOG' 테이블을 확인해 보시는 것을 권장합니다."
     else:
-        # (실제로는 여기서 LLM이나 RAG가 호출됩니다)
-        bot_response = f"'{user_prompt}'에 대해 답변을 생성 중입니다. (FastAPI 응답)"
+        bot_response = f"'{user_prompt}'에 대해 답변을 생성 중입니다. (아직 구현되지 않은 기능)"
 
-    # JSON 형태로 응답 반환
     return ChatResponse(response=bot_response)
 
-# 6. (로컬 테스트용) 서버 실행
+# ★ 6. (신규) HTML 서빙 엔드포인트 ★
+
+@app.get("/chatbot.html")
+async def get_chatbot_html():
+    """chatbot.html 파일을 서빙합니다."""
+    return FileResponse(FRONTEND_DIR / "chatbot.html")
+
+@app.get("/")
+async def get_index_html():
+    """루트 URL(/) 요청 시 index.html 파일을 서빙합니다."""
+    return FileResponse(FRONTEND_DIR / "index.html")
+
+# 7. (로컬 테스트용) 서버 실행
 if __name__ == "__main__":
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
-    # 터미널에서 'uvicorn backend.fastapi_app:app --host 0.0.0.0 --port 8000 --reload'로 실행
     pass
