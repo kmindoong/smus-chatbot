@@ -8,3 +8,5 @@
 ### 2. 새로운 터미널을 열어서 app.py를 streamlit으로 실행 ex) streamlit run app.py
 
 ### 참고로 Embedding 소스는 aspnet_groupware\Pages\Shared\_Layout.cshtml 참고
+
+![예시 화면](./image/sampleapp.png)
