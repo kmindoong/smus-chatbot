@@ -71,6 +71,7 @@
         const modal = document.getElementById('chatbot-modal-content');
         let isOpen = false;
 
+        // 아이콘 클릭 시 팝업 열기/닫기
         openBtn.onclick = () => {
             if (isOpen) {
                 modal.style.display = 'none';
@@ -80,6 +81,16 @@
                 isOpen = true;
             }
         };
+
+        // ★★★ (핵심 추가) Iframe(chatbot.html)으로부터 메시지 받기 ★★★
+        window.addEventListener('message', (event) => {
+            // chatbot.html에서 보낸 'closeChatbot' 메시지인지 확인
+            if (event.data && event.data.type === 'closeChatbot') {
+                // 팝업을 닫습니다.
+                modal.style.display = 'none';
+                isOpen = false;
+            }
+        });
     </script>
 
 </body>

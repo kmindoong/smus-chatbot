@@ -153,8 +153,7 @@
         //  우선 아이콘 클릭으로 팝업을 닫는 방식 사용)
         closeBtn.onclick = () => {
              // 팝업을 닫는 기능은 부모(index.html)가 제어
-             // 여기서는 닫기 이벤트만 보낼 수 있으나, 지금은 단순화
-             alert("닫기 버튼 클릭됨 (부모 창에서 제어 필요)");
+             window.parent.postMessage({ type: 'closeChatbot' }, '*');
              // 또는 index.html의 JS를 수정해야 함
         };
         
