@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 포털 페이지 (.NET 시뮬레이션)</title>
     <style>
-        /* 페이지 기본 스타일 (Streamlit 다크 모드와 유사하게) */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #0E1117;
@@ -13,7 +12,7 @@
             padding: 2rem;
         }
 
-        /* ★ 1. 플로팅 아이콘 버튼 스타일 */
+        /* 1. 플로팅 아이콘 버튼 */
         #chatbot-open-button {
             position: fixed;
             bottom: 30px;
@@ -30,102 +29,68 @@
             transform: scale(1.1);
         }
 
-        /* ★ 2. 팝업 모달 배경 (기본 숨김) */
-        #chatbot-modal-backdrop {
+        /* 2. 팝업 모달 (Iframe 래퍼) */
+        #chatbot-modal-content {
             display: none; /* 평소엔 숨김 */
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            /* 반투명 배경 (클릭 시 닫기용) */
-            background-color: rgba(0, 0, 0, 0.4); 
-            z-index: 1000;
-        }
-
-        /* ★ 3. 팝업 모달창 (우측 하단) */
-        #chatbot-modal-content {
-            position: fixed;
-            bottom: 100px; /* 아이콘 버튼 바로 위 */
+            bottom: 100px;
             right: 30px;
-            
             width: 400px;
             height: 600px;
             max-width: 90vw;
             max-height: 70vh;
-
-            background-color: #2E2E3A;
+            background-color: #0E1117;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            
-            /* 닫기 버튼과 iframe을 담을 컨테이너 */
-            display: flex;
             flex-direction: column;
-            overflow: hidden; /* 둥근 모서리 적용 */
+            overflow: hidden;
+            z-index: 1000;
         }
-
-        /* 팝업 닫기 'X' 버튼 */
-        #chatbot-close-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1002;
-        }
-
-        /* ★ 4. Streamlit 앱이 로드될 iframe */
-        #chatbot-iframe {
+        
+        #chatbot-modal-content iframe {
             width: 100%;
             height: 100%;
             border: none;
-            margin-top: 40px; /* 닫기 버튼 공간 확보 */
         }
     </style>
 </head>
 <body>
 
-    <h1>Streamlit 메인 페이지</h1>
+    <h1>그룹웨어 메인 페이지</h1>
     <p>우측 하단의 챗봇 아이콘을 클릭해 보세요.</p>
     <p>이 페이지는 .NET 포털을 시뮬레이션하는 순수 HTML입니다.</p>
 
     <img src="images/icon.png" id="chatbot-open-button" alt="Open Chatbot">
 
-    <div id="chatbot-modal-backdrop">
-        <div id="chatbot-modal-content">
-            <span id="chatbot-close-button">&times;</span>
-            
-            <iframe id="chatbot-iframe" src="http://localhost:8501?embed=true"></iframe>
-        </div>
+    <div id="chatbot-modal-content">
+        <iframe src="./chatbot.html" title="SMUS 봇"></iframe>
     </div>
 
     <script>
         const openBtn = document.getElementById('chatbot-open-button');
-        const closeBtn = document.getElementById('chatbot-close-button');
-        const backdrop = document.getElementById('chatbot-modal-backdrop');
-        const iframe = document.getElementById('chatbot-iframe');
-        const iframeSrc = iframe.src; // 초기 URL 저장
+        const modal = document.getElementById('chatbot-modal-content');
+        let isOpen = false;
 
-        // 아이콘 클릭 시: 모달 보이기
-        openBtn.onclick = function() {
-            backdrop.style.display = 'block';
-            // (선택) 팝업을 열 때마다 새로고침
-            // iframe.src = iframeSrc; 
-        }
-
-        // 'X' 버튼 클릭 시: 모달 숨기기
-        closeBtn.onclick = function() {
-            backdrop.style.display = 'none';
-        }
-
-        // 배경 클릭 시: 모달 숨기기
-        backdrop.onclick = function(event) {
-            if (event.target == backdrop) {
-                backdrop.style.display = 'none';
+        // 아이콘 클릭 시 팝업 열기/닫기
+        openBtn.onclick = () => {
+            if (isOpen) {
+                modal.style.display = 'none';
+                isOpen = false;
+            } else {
+                modal.style.display = 'flex';
+                isOpen = true;
             }
-        }
+        };
+
+        // ★★★ (핵심 추가) Iframe(chatbot.html)으로부터 메시지 받기 ★★★
+        window.addEventListener('message', (event) => {
+            // chatbot.html에서 보낸 'closeChatbot' 메시지인지 확인
+            if (event.data && event.data.type === 'closeChatbot') {
+                // 팝업을 닫습니다.
+                modal.style.display = 'none';
+                isOpen = false;
+            }
+        });
     </script>
 
 </body>
