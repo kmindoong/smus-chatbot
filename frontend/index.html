@@ -3,92 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메인 포털 페이지 (.NET 시뮬레이션)</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0E1117;
-            color: white;
-            padding: 2rem;
-        }
-
-        /* 1. 플로팅 아이콘 버튼 */
-        #chatbot-open-button {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0, 0.3);
-            transition: transform 0.2s;
-            z-index: 999;
-        }
-        #chatbot-open-button:hover {
-            transform: scale(1.1);
-        }
-
-        /* 2. 팝업 모달 (Iframe 래퍼) */
-        #chatbot-modal-content {
-            display: none; /* 평소엔 숨김 */
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 400px;
-            height: 600px;
-            max-width: 90vw;
-            max-height: 70vh;
-            background-color: #0E1117;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1000;
-        }
-        
-        #chatbot-modal-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+    <title>그룹웨어 메인 페이지</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
-    <h1>그룹웨어 메인 페이지</h1>
-    <p>우측 하단의 챗봇 아이콘을 클릭해 보세요.</p>
-    <p>이 페이지는 .NET 포털을 시뮬레이션하는 순수 HTML입니다.</p>
-
-    <img src="images/icon.png" id="chatbot-open-button" alt="Open Chatbot">
-
-    <div id="chatbot-modal-content">
-        <iframe src="./chatbot.html" title="SMUS 봇"></iframe>
+    <div class="main-content">
+        <h1>그룹웨어 메인 페이지</h1>
+        <p>우측 하단의 챗봇 아이콘을 클릭해 보세요.</p>
+        <p>이 페이지는 .NET 포털을 시뮬레이션하는 순수 HTML입니다.</p>
     </div>
 
+    <iframe 
+        id="chatbot-frame"
+        src="./chatbot.html"
+        frameborder="0"
+        title="SMUS 봇">
+    </iframe>
+
+    <button id="chatbot-toggle-button-right" class="chatbot-toggle-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <line x1="12" y1="11" x2="12" y2="11.01"></line>
+            <line x1="8" y1="11" x2="8" y2="11.01"></line>
+            <line x1="16" y1="11" x2="16" y2="11.01"></line>
+        </svg>
+    </button>
+
+    <button id="chatbot-toggle-button-left" class="chatbot-toggle-button">
+        <img src="./images/icon1.png" alt="챗봇 열기">
+    </button>
+
+    <button id="chatbot-toggle-button-center" class="chatbot-toggle-button">
+        <img src="./images/icon2.png" alt="챗봇 열기">
+    </button>
+
+
     <script>
-        const openBtn = document.getElementById('chatbot-open-button');
-        const modal = document.getElementById('chatbot-modal-content');
-        let isOpen = false;
+        const chatbotFrame = document.getElementById('chatbot-frame');
+        
+        // [수정] 공용 클래스로 3개의 버튼을 모두 선택
+        const chatbotToggleButtons = document.querySelectorAll('.chatbot-toggle-button');
 
-        // 아이콘 클릭 시 팝업 열기/닫기
-        openBtn.onclick = () => {
-            if (isOpen) {
-                modal.style.display = 'none';
-                isOpen = false;
-            } else {
-                modal.style.display = 'flex';
-                isOpen = true;
-            }
-        };
+        // [수정] forEach 반복문으로 각 버튼에 클릭 이벤트 리스너를 추가
+        chatbotToggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                chatbotFrame.classList.toggle('visible');
+            });
+        });
 
-        // ★★★ (핵심 추가) Iframe(chatbot.html)으로부터 메시지 받기 ★★★
+        // 챗봇(iframe)으로부터 'close-chatbot' 메시지 수신 (기존과 동일)
         window.addEventListener('message', (event) => {
-            // chatbot.html에서 보낸 'closeChatbot' 메시지인지 확인
-            if (event.data && event.data.type === 'closeChatbot') {
-                // 팝업을 닫습니다.
-                modal.style.display = 'none';
-                isOpen = false;
+            if (event.data === 'close-chatbot') {
+                chatbotFrame.classList.remove('visible');
             }
         });
     </script>

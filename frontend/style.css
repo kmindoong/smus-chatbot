@@ -1,0 +1,485 @@
+/* --- 1. 기본 및 공용 스타일 --- */
+html {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    height: 100%;
+}
+/* index.html의 메인 페이지 (다크 모드 기본) */
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: #121212; 
+    color: #e0e0e0;
+    height: 100vh;
+}
+
+body.chatbot-body {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    height: 100%; 
+    color: #212529;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- 2. index.html 스타일 (iframe, 플로팅 버튼) --- */
+#chatbot-frame {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    width: 380px;
+    height: 700px; 
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    overflow: hidden;
+}
+#chatbot-frame.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.chatbot-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent; 
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    z-index: 100;
+}
+.chatbot-toggle-button:hover {
+    background-color: #0056b3;
+}
+#chatbot-toggle-button-right {
+    right: 20px;
+}
+#chatbot-toggle-button-left {
+    left: 20px;
+}
+#chatbot-toggle-button-center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+.chatbot-toggle-button img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+/* --- 3. chatbot.html 내부 스타일 (라이트 모드 - 기본) --- */
+
+.chat-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* 3-1. 헤더 */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.chat-header .title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #343a40;
+    transition: color 0.3s;
+}
+.chat-header .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #868e96;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    position: relative; /* ★ 툴팁 기준점을 위해 이 한 줄을 추가합니다 */
+}
+.chat-header .icon-button:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* [수정] 2. 해/달 아이콘 논리 반전 */
+.theme-icon {
+    display: none; /* 기본 숨김 */
+}
+.theme-icon.icon-moon {
+    display: block; /* 라이트 모드(기본): 달(🌙) 보임 */
+}
+body.dark-mode .theme-icon.icon-sun {
+    display: block; /* 다크 모드: 해(☀️) 보임 */
+}
+body.dark-mode .theme-icon.icon-moon {
+    display: none; /* 다크 모드: 달(🌙) 숨김 */
+}
+
+/* [수정] 3. 툴팁(title) 스타일링 (모든 버튼 공통) */
+/* 버튼에 title 속성이 있고, :hover(마우스 오버)되면 
+  가상요소(::after)를 만들어 툴팁을 표시합니다.
+*/
+/* [수정] 3. 툴팁(title) 스타일링 (대부분의 버튼: 아래로 표시) */
+.icon-button[title]:hover::after,
+.send-button[title]:hover::after,
+.copy-button[title]:hover::after {
+    content: attr(title); 
+    position: absolute;
+    bottom: -32px; /* ★ 버튼 아래에 표시 */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap; 
+    background-color: rgba(0, 0, 0, 0.85); 
+    color: #fff; 
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 100;
+    pointer-events: none; /* 툴팁이 마우스 이벤트를 가로채지 않도록 */
+}
+
+/* [신규] 4. 홈 버튼 툴팁만 '위로' 표시 */
+.reset-chat[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: -32px; /* ★ 버튼 위에 표시 */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* 3-2. 메시지 영역 */
+.chat-body {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    transition: background-color 0.3s;
+}
+
+.message {
+    border-radius: 18px;
+    max-width: 80%;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+.message.received {
+    background-color: #f1f3f5;
+    color: #343a40;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    padding: 10px 14px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+.message.sent {
+    background-color: #007bff;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+    margin-left: auto;
+    align-self: flex-end;
+    padding: 10px 14px;
+}
+.message.error {
+    background-color: #ffe3e3;
+    color: #d90429;
+    border-bottom-left-radius: 4px;
+}
+
+.message-content-wrapper {
+    display: flex;
+    align-items: flex-end;
+    flex-grow: 1;
+    gap: 8px;
+    position: relative;
+}
+.message .message-text {
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+/* 3-3. 퀵 리플라이 */
+.quick-reply-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+.quick-reply {
+    background-color: #ffffff;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 10px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    transition: background-color 0.2s, color 0.2s;
+}
+.quick-reply:hover {
+    background-color: #f0f7ff;
+}
+
+/* 3-4. 하단 입력 */
+.chat-footer {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    flex-shrink: 0;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.chat-input {
+    flex-grow: 1;
+    border: 1px solid #ced4da;
+    background-color: #ffffff;
+    color: #495057;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    margin-right: 8px;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+.chat-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+}
+
+.send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* 툴팁 기준점 */
+}
+.send-button:hover {
+    background-color: #0056b3;
+}
+.send-button svg {
+    margin-left: -2px; 
+}
+
+
+/* --- 4. 다크 모드 스타일 (chatbot.html) --- */
+body.dark-mode .chat-container {
+    background-color: #2c2c2c;
+    border-color: #444;
+}
+body.dark-mode .chat-header {
+    background-color: #333333;
+    border-bottom-color: #444;
+}
+body.dark-mode .chat-header .title {
+    color: #f1f1f1;
+}
+body.dark-mode .chat-header .icon-button {
+    color: #b0b0b0;
+}
+body.dark-mode .chat-header .icon-button:hover {
+    background-color: #444;
+    color: #ffffff;
+}
+body.dark-mode .chat-body {
+    background-color: #2c2c2c;
+}
+body.dark-mode .message.received {
+    background-color: #3b3b3b;
+    color: #e0e0e0;
+}
+body.dark-mode .message.sent {
+    background-color: #007bff;
+    color: #ffffff;
+}
+body.dark-mode .message.error {
+    background-color: #5c1a22;
+    color: #ffbaba;
+}
+body.dark-mode .quick-reply {
+    background-color: #3b3b3b;
+    border-color: #007bff;
+    color: #4dabf7;
+}
+body.dark-mode .quick-play:hover {
+    background-color: #444;
+}
+body.dark-mode .chat-footer {
+    background-color: #333333;
+    border-top-color: #444;
+}
+body.dark-mode .chat-input {
+    border-color: #555;
+    background-color: #2c2c2c;
+    color: #f1f1f1;
+}
+body.dark-mode .chat-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+}
+
+/* --- 5. 타이핑 인디케이터 스타일 --- */
+.message.typing {
+    background-color: #f1f3f5;
+    color: #868e96;
+    padding: 12px 16px;
+}
+body.dark-mode .message.typing {
+    background-color: #3b3b3b;
+    color: #b0b0b0;
+}
+.message.typing span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    margin: 0 1px;
+    animation: typing-blink 1.4s infinite both;
+}
+.message.typing span:nth-child(1) { animation-delay: 0.0s; }
+.message.typing span:nth-child(2) { animation-delay: 0.2s; }
+.message.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-blink {
+    0% { opacity: 0.2; }
+    20% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+/* --- 6. '첫 화면' 버튼 스타일 --- */
+.reset-chat {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    left: 50%; /* ★ 왼쪽에서 50% 위치로 */
+    transform: translateX(-50%); /* ★ 버튼 너비의 절반만큼 왼쪽으로 이동 */
+    background-color: #ffffff;
+    color: #868e96;
+    border: 1px solid #dee2e6;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    margin-top: 10px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.reset-chat:hover {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+body.dark-mode .reset-chat {
+    background-color: #3b3b3b;
+    color: #b0b0b0;
+    border-color: #555;
+}
+body.dark-mode .reset-chat:hover {
+    background-color: #444;
+    color: #ffffff;
+}
+
+/* --- 7. 복사 버튼 스타일 (Gemini 스타일) --- */
+.message .copy-button {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 50%;
+    color: #495057;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+    position: relative; /* 툴팁 기준점 */
+}
+
+.message.received:hover .copy-button {
+    opacity: 1;
+}
+
+.message .copy-button:hover {
+    background-color: #dee2e6;
+    color: #212529;
+}
+
+.message .copy-button.copied {
+    background-color: #d4edda;
+    color: #28a745;
+    opacity: 1;
+}
+
+body.dark-mode .message .copy-button {
+    background-color: #495057;
+    color: #ced4da;
+}
+
+body.dark-mode .message .copy-button:hover {
+    background-color: #6c757d;
+    color: #f8f9fa;
+}
+
+body.dark-mode .message .copy-button.copied {
+    background-color: #2e5934;
+    color: #66bb6a;
+}
