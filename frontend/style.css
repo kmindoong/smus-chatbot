@@ -1,4 +1,17 @@
 /* --- 1. 기본 및 공용 스타일 --- */
+html, body {
+    /* 뷰포트를 초과하는 콘텐츠를 숨기고 스크롤바를 제거합니다. */
+    overflow: hidden; 
+    
+    /* 너비와 높이를 뷰포트에 정확히 맞춥니다. */
+    width: 100%;
+    height: 100%;
+    
+    /* 브라우저 기본 마진과 패딩을 제거하여 여백으로 인한 스크롤을 방지합니다. */
+    margin: 0;
+    padding: 0;
+}
+
 html {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     height: 100%;
@@ -26,8 +39,8 @@ body.chatbot-body {
     position: fixed;
     right: 20px;
     bottom: 80px;
-    width: 380px;
-    height: 700px; 
+    width: 350px;
+    height: 550px; 
     border: none;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
