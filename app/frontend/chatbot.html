@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="chatbot-body">
+
+    <div class="chat-container">
+        
+        <div class="chat-header">
+            <span class="title">SMUS 봇</span>
+            <div class="button-group">
+                <a href="YOUR_LINK_HERE" target="_blank" class="icon-button" title="통합데이터분석환경 바로가기">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+
+                <button class="icon-button" title="화면모드 전환" id="toggle-dark-mode">
+                    <svg class="theme-icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" 
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         fill="none" stroke="gold">
+                        <circle cx="12" cy="12" r="5" fill="gold"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="theme-icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" 
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         fill="#5D3FD3" stroke="#5D3FD3">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                
+                <button class="icon-button" title="닫기" id="close-chatbot">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-body" id="chat-body">
+            <button id="reset-chat-button" class="reset-chat" title="처음으로 돌아가기">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </button>
+        </div>
+
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chat-input" placeholder="대화를 시작해 보세요.">
+            <button class="send-button" id="send-button" title="전송">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
+            </button>
+        </div>
+
+    </div> 
+
+    <script>
+        // --- 0. DOM 요소 캐싱 ---
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const darkModeButton = document.getElementById('toggle-dark-mode');
+        const closeButton = document.getElementById('close-chatbot');
+        const resetButton = document.getElementById('reset-chat-button');
+        
+        const API_URL = '/api/chat'; // API 엔드포인트
+
+        // ★★★ [로컬 테스트용] Cognito 토큰 ★★★
+        // 로컬 테스트 시, AWS Cognito 콘솔에서 발급받은 '유효한' JWT 토큰을 여기에 붙여넣으세요.
+        // Fargate 배포 시에는 실제 로그인 로직으로 대체되어야 합니다.
+        const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoid09VUWhoWktxZkZyN0ZVYlFXLXdBZyIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3NjIyMzYyNzIsIm5hbWUiOiJtaW5qZW9uZyBrd29uIiwiZXhwIjoxNzYyMjM5ODcyLCJpYXQiOjE3NjIyMzYyNzIsImp0aSI6ImEwNjM2NWJmLTQ0OWItNGVlMC05ZjVlLWY4YmVhNTlkNDk1ZCIsImVtYWlsIjoibWprd29uMDIyNkBnbWFpbC5jb20ifQ.WA1-SrU90CN3oooHdY5tWPQC0KHapv9QZvIrk-kUZMLMB7XSo7vP-TjBba7ju2wH6YiFYYuzWm0NFgTgQVtUUSvJ6p7_GSTcDarWs6ihudmeh1ZUPSYnJU2a2tpisgH9N_CAUIqvA5ebrZQ0AYmbDrt_lJSJ1F9cTbTK6lVohJCN0vSVOkw7yPGnbXO-uRc5Iya0tsJXTFyhk9JeQPsQ11igfTr-Shw6nFAV33b33PoCLypmCAPYPEimzODjQmH8wateyyB-Iu92zRkH5TVfE7STM4F9yBoKMC4OxHODHLni7xMaggXPDxfHYBmD5TCAPxO6Fh5FkDjhvpX_ieq_1A&access_token=eyJraWQiOiJcL3cxMFJpSmxJVU5Ya29ObWN3bU11NGdNcGlSUm10a1gyRno0YTBEeThCUT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiNGY4MmQ4Yy0xMDAxLTcwMDEtOWI5OC1iNDJlZTEyMDUzYmMiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIHBob25lIG9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXV0aF90aW1lIjoxNzYyMjM2MjcyLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiZXhwIjoxNzYyMjM5ODcyLCJpYXQiOjE3NjIyMzYyNzIsInZlcnNpb24iOjIsImp0aSI6ImMzOTM0ZjkzLTk3MTAtNGE3MS05YTUxLWUxYWRjZGRhMTBmMCIsImNsaWVudF9pZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwidXNlcm5hbWUiOiJtamt3b24ifQ.iWYAKGhTnVJwLKEp7FQ-dPPx4KCdpm7mEEmGkgU36ffaaj1m4bS1UhLLRo8CK9OXF1yNUYSvryWvhTTkcMU6qELLv8hswhf2DDSs07Urmba-lwGF9JBawQkNKbXUF9hMWlkffEFq3SQsmNX9JBDisDy1Dtu4jWYeqpKgrhaX-qSSyHgNB_Tuo4wB5cQ5wOJMOEV3npw_iYcOzOcjl-w1x4po0iGjw-s146dOJDjRxBIzh8oUPeW7Yp8JOiUWAoRYbJqEFVGJlt3VlAcLMCY1lqUsG8LSsiOEWjP8dcHfTwzZqO2lv90X8vgqmD7PLLnPJRUujQ2An3v4h8ftw6aIqw"; 
+        
+        let currentBotMessageElement = null; // 현재 봇 응답을 저장할 임시 변수
+
+        // --- 1. 이벤트 리스너 ---
+        document.addEventListener('DOMContentLoaded', initializeChat);
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); sendMessage();
+            }
+        });
+        darkModeButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+        closeButton.addEventListener('click', () => {
+            window.parent.postMessage('close-chatbot', '*');
+        });
+        resetButton.addEventListener('click', initializeChat); // 홈 버튼 클릭 시 초기화
+        
+        chatBody.addEventListener('click', handleChatBodyClick); // 복사 버튼 리스너
+        
+        // --- 2. 핵심 기능 ---
+
+        // [최종] 퀵 리플라이(자주하는 질문)가 포함된 초기화 함수
+        function initializeChat() {
+            chatBody.innerHTML = ''; 
+            // 'welcome-message' 클래스로 인사말 식별
+            const welcomeMsg = createMessageElement("안녕하세요, 권민정님. 학습도우미 'SMUS 봇'이에요.", 'received welcome-message');
+            chatBody.appendChild(welcomeMsg);
+            
+            // 퀵 리플라이 버튼 HTML
+            const quickReplyHTML = `
+            <div class="quick-reply-wrapper">
+                <button class="quick-reply">담당자 정보 알려줘</button>
+                <button class="quick-reply">데이터를 활용하고 싶은데 신청 방법은?</button>
+                <button class="quick-reply">안전보건 데이터를 확인하고 싶어, 어떤 테이블을 확인해야 해?</button>
+            </div>`;
+            chatBody.insertAdjacentHTML('beforeend', quickReplyHTML);
+            
+            // 퀵 리플라이 버튼에 이벤트 리스너 연결
+            document.querySelectorAll('.quick-reply').forEach(button => {
+                button.addEventListener('click', handleQuickReplyClick);
+            });
+            
+            chatBody.appendChild(resetButton); // 홈 버튼 다시 추가
+            resetButton.style.display = 'none'; // 첫 화면에서는 숨김
+        }
+        
+        // [최종] 퀵 리플라이 클릭 처리
+        function handleQuickReplyClick(e) {
+            const question = e.target.textContent;
+            chatInput.value = question;
+            sendMessage();
+        }
+
+        // [최종] 복사 버튼 클릭 처리 (http:// 환경용 execCommand)
+        function handleChatBodyClick(e) {
+            const copyButton = e.target.closest('.copy-button');
+            if (!copyButton) return;
+
+            const messageElement = copyButton.closest('.message');
+            if (!messageElement) return;
+
+            const messageTextSpan = messageElement.querySelector('.message-text');
+            if (!messageTextSpan) return;
+
+            const messageText = messageTextSpan.textContent;
+            
+            // execCommand 로직
+            const textarea = document.createElement('textarea');
+            textarea.value = messageText;
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Failed to copy text (execCommand): ', err);
+            }
+            document.body.removeChild(textarea);
+
+            if (success) {
+                const originalIcon = copyButton.innerHTML;
+                copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                copyButton.classList.add('copied'); 
+                setTimeout(() => {
+                    copyButton.innerHTML = originalIcon;
+                    copyButton.classList.remove('copied');
+                }, 1500);
+            }
+        }
+
+        // [최종] 스트리밍 sendMessage 함수
+        async function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText === "") return;
+            
+            addMessageToUI(messageText, 'sent');
+            chatInput.value = "";
+            
+            currentBotMessageElement = createMessageElement("", 'received');
+            chatBody.insertBefore(currentBotMessageElement, resetButton); 
+            addTypingIndicator(currentBotMessageElement);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + TEMP_AUTH_TOKEN // [최종] 인증 토큰 전송
+                    },
+                    body: JSON.stringify({ 
+                        message: messageText
+                        // sessionId는 백엔드가 토큰에서 추출
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let streamingText = ""; 
+
+                removeTypingIndicator(currentBotMessageElement); // 스트림 시작 시 타이핑 제거
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        finalizeMessage(currentBotMessageElement); // 스트림 끝나면 복사 버튼 추가
+                        break;
+                    }
+                    
+                    const chunkText = decoder.decode(value, { stream: true });
+                    streamingText += chunkText;
+                    
+                    let textSpan = currentBotMessageElement.querySelector('.message-text');
+                    if (!textSpan) { 
+                        const contentWrapper = currentBotMessageElement.querySelector('.message-content-wrapper');
+                        textSpan = document.createElement('span');
+                        textSpan.classList.add('message-text');
+                        contentWrapper.appendChild(textSpan);
+                    }
+                    textSpan.textContent = streamingText; // 텍스트 실시간 업데이트
+                    
+                    scrollToBottom();
+                }
+
+            } catch (error) {
+                console.error('Error fetching stream response:', error);
+                if (currentBotMessageElement) {
+                    removeTypingIndicator(currentBotMessageElement);
+                    let textSpan = currentBotMessageElement.querySelector('.message-text');
+                    if(textSpan) textSpan.textContent = '죄송합니다. 오류가 발생했습니다.';
+                    currentBotMessageElement.classList.add('error');
+                }
+            } finally {
+                currentBotMessageElement = null; 
+                resetButton.style.display = 'flex'; // 홈 버튼 표시
+                scrollToBottom();
+            }
+        }
+
+        // --- 3. UI 헬퍼 함수 ---
+
+        // [최종] 메시지 생성 (복사 버튼 로직 분리)
+        function createMessageElement(text, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', ...type.split(' ')); 
+
+            if (type.startsWith('received')) {
+                const contentWrapper = document.createElement('div');
+                contentWrapper.classList.add('message-content-wrapper');
+
+                if (text) { // 인사말 등 초기 텍스트
+                    const textSpan = document.createElement('span');
+                    textSpan.classList.add('message-text');
+                    textSpan.textContent = text;
+                    contentWrapper.appendChild(textSpan);
+                }
+                messageElement.appendChild(contentWrapper);
+
+            } else { // 'sent'
+                messageElement.textContent = text;
+            }
+            return messageElement;
+        }
+
+        // [최종] 스트림 종료 시 복사 버튼 추가 (인사말 제외)
+        function finalizeMessage(messageElement) {
+            if (!messageElement || messageElement.classList.contains('welcome-message')) {
+                return;
+            }
+            
+            const contentWrapper = messageElement.querySelector('.message-content-wrapper');
+            if (contentWrapper && !contentWrapper.querySelector('.copy-button')) {
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('copy-button');
+                copyButton.title = "답변 복사"; // 툴팁
+                copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></path><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+                contentWrapper.appendChild(copyButton);
+            }
+        }
+
+        // [최종] 메시지 UI 추가
+        function addMessageToUI(text, type) {
+            const messageElement = createMessageElement(text, type);
+            const quickReplies = chatBody.querySelector('.quick-reply-wrapper');
+            if(quickReplies) quickReplies.remove(); // 퀵 리플라이 제거
+            chatBody.insertBefore(messageElement, resetButton); // 홈 버튼 '앞'에 메시지 삽입
+            resetButton.style.display = 'flex'; // 홈 버튼 표시
+            scrollToBottom();
+        }
+
+        // [최종] 타이핑 인디케이터 (메시지 버블 안에 추가)
+        function addTypingIndicator(targetElement) {
+            const contentWrapper = targetElement.querySelector('.message-content-wrapper');
+            if (!contentWrapper) return;
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator'); 
+            typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+            contentWrapper.appendChild(typingIndicator);
+            scrollToBottom();
+        }
+
+        // [최종] 타이핑 인디케이터 제거
+        function removeTypingIndicator(targetElement) {
+            const indicator = targetElement.querySelector('.typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // [최종] 스크롤 하단 이동
+        function scrollToBottom() {
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+</body>
+</html>

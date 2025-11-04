@@ -1,11 +1,16 @@
 # Python cache
 __pycache__/
 *.pyc
+.git/
+.vscode/
+tests/
 
 # Virtual environment
 .venv/
 venv/
 env/
+.env
+.env.*
 
 # IDE / OS files
 .vscode/

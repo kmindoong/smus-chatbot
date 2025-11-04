@@ -1,3 +1,7 @@
 fastapi
-uvicorn[standard]
+uvicorn
 gunicorn
+boto3
+python-jose[cryptography] # Cognito 인증
+pydantic
+pydantic-settings  # <-- [신규] 환경 변수 관리를 위해 추가
