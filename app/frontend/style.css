@@ -114,6 +114,7 @@ body.chatbot-body {
     border-bottom: 1px solid #e9ecef;
     flex-shrink: 0;
     transition: background-color 0.3s, border-color 0.3s;
+    position: relative; /* ⭐️ 이 줄을 추가하세요 ⭐️ */
 }
 .chat-header .title {
     font-size: 1.1rem;
@@ -330,15 +331,35 @@ body.dark-mode .chat-input { border-color: #555; background-color: #2c2c2c; colo
 body.dark-mode .chat-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,.25); }
 
 /* --- 5. 타이핑 인디케이터 (스트리밍용) --- */
-.typing-indicator { padding: 10px 0; }
+/* --- 로딩 인디케이터 (타이핑 효과) CSS --- */
+.typing-indicator {
+  display: flex;
+  padding: 10px 15px;
+}
+
 .typing-indicator span {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
+    background-color: #999; /* 챗봇 UI에 맞춰 색상 변경 가능 */
     border-radius: 50%;
-    background-color: #868e96; /* 라이트 모드 */
-    margin: 0 1px;
-    animation: typing-blink 1.4s infinite both;
+    margin: 0 2px;
+    animation: typing-bounce 1.4s infinite;
+}
+/* 애니메이션 딜레이 */
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1.0);
+  }
 }
 body.dark-mode .typing-indicator span { background-color: #b0b0b0; }
 .typing-indicator span:nth-child(1) { animation-delay: 0.0s; }
@@ -399,3 +420,156 @@ body.dark-mode .reset-chat:hover { background-color: #444; color: #ffffff; }
 body.dark-mode .message .copy-button { background-color: #495057; color: #ced4da; }
 body.dark-mode .message .copy-button:hover { background-color: #6c757d; color: #f8f9fa; }
 body.dark-mode .message .copy-button.copied { background-color: #2e5934; color: #66bb6a; }
+
+/* 모달 뒷배경 (검은색 반투명) */
+.modal-overlay {
+    display: none; /* 평소에는 숨김 */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px); /* 뒷배경 흐리게 */
+    animation: fadeIn 0.3s;
+}
+
+/* 모달 본체 (흰색 박스) */
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin: 15% auto; /* 화면 중앙에 */
+    padding: 24px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    animation: slideDown 0.4s;
+}
+
+/* 모달 닫기 버튼 (X) */
+.modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.modal-close:hover,
+.modal-close:focus {
+    color: #333;
+}
+
+/* 모달 제목 */
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* 대화 목록 리스트 */
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* 대화 목록 아이템 */
+#history-list li {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.95rem;
+    color: #555;
+}
+#history-list li:last-child {
+    border-bottom: none;
+}
+#history-list li:hover {
+    background-color: #f9f9f9;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.prev-chat-button {
+    /* ⭐️ 1. 배경/색상 (어둡게) */
+    background-color: #495057;
+    color: #f8f9fa;
+    
+    /* ⭐️ 2. 폰트/정렬 (가운데 정렬 및 크기 수정) */
+    font-size: 0.8rem; /* 폰트 크기 작게 */
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* ⭐️ 3. 레이아웃 (position 제거) */
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-right: 8px; /* ⭐️ 오른쪽 아이콘 그룹과의 간격 */
+    
+    /* ⭐️ 아래 4줄 삭제 (position: absolute 및 관련 속성) */
+    /* position: absolute;  <- 삭제 */
+    /* left: 100px;         <- 삭제 */
+    /* top: 50%;            <- 삭제 */
+    /* transform: translateY(-50%); <- 삭제 */
+}
+
+.prev-chat-button:hover {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.prev-chat-button i {
+    margin-right: 5px;
+    color: #f8f9fa;
+}
+
+.header-icons i {
+    font-size: 1.25rem;
+    color: #6c757d; /* ⭐️ 기존보다 조금 더 어둡게 또는 버튼과 비슷하게 */
+    margin-left: 15px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.header-icons i:hover {
+    color: #495057; /* ⭐️ 호버 시 더 어둡게 */
+}
+
+/* ⭐️ 헤더 오른쪽 정렬용 그룹 (신규) ⭐️ */
+.header-right-group {
+    display: flex;
+    align-items: center;
+}
+
+/* --- ⭐️ 중지 버튼 (빨간색) 스타일 (신규) --- */
+.send-button.stop-button {
+    background-color: #dc3545; /* Bootstrap 'danger' 빨간색 */
+    color: white;
+}
+.send-button.stop-button:hover {
+    background-color: #c82333; /* 더 어두운 빨간색 */
+}
