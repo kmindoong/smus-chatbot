@@ -1,34 +1,75 @@
-import json
-from typing import AsyncGenerator
-from app.core.config import settings
-from app.services.boto3_session import bedrock_agent_runtime # [수정] 중앙 Boto3 세션에서 임포트
+# app/services/bedrock_service.py
 
-async def invoke_agent_streaming(
-    session_id: str, 
-    prompt: str
-) -> AsyncGenerator[bytes, None]:
+import json
+import traceback 
+from datetime import datetime, timezone
+from app.core.config import settings
+from app.services.boto3_session import bedrock_agent_client
+from app.services.dynamodb_service import save_message, create_session
+
+def stream_agent_response( 
+    user_sub: str, 
+    session_id: str | None, 
+    message_text: str
+):
     """
-    Bedrock Agent를 호출하고 응답을 스트리밍합니다.
+    [수정] Bedrock Agent의 'invoke_agent' (동기)를 호출하고,
+    sessionId가 정규식(regex) 제약 조건을 만족하도록 수정합니다.
     """
+    
+    is_new_chat = False
+    session_id_to_use = session_id 
+    
+    if not session_id:
+        is_new_chat = True
+        # ⭐️ (수정) .isoformat()이 '+00:00'을 생성하므로, 'Z'로 대체합니다.
+        session_id_to_use = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+    
     try:
-        response = bedrock_agent_runtime.invoke_agent(
+        # --- (이하 DB 저장 및 Bedrock 호출 로직은 기존과 동일) ---
+        save_message(
+            session_id=session_id_to_use, 
+            role='user', 
+            content=message_text
+        )
+        if is_new_chat:
+            create_session(
+                user_id=user_sub, 
+                session_id=session_id_to_use, 
+                title=message_text
+            )
+
+        if is_new_chat:
+            yield json.dumps({"sessionId": session_id_to_use}) + "\n"
+            
+        response = bedrock_agent_client.invoke_agent( 
             agentId=settings.BEDROCK_AGENT_ID,
             agentAliasId=settings.BEDROCK_AGENT_ALIAS_ID,
-            sessionId=session_id,
-            inputText=prompt,
+            sessionId=session_id_to_use, 
+            inputText=message_text
         )
         
-        event_stream = response.get('completion')
-        if not event_stream:
-            yield json.dumps({"error": "No completion stream"}).encode('utf-8')
-            return
-
-        for event in event_stream:
-            if 'chunk' in event:
-                data_chunk = event['chunk'].get('bytes', b'')
-                yield data_chunk
-            # (기타 trace, error 이벤트 처리)
-
+        full_bot_response = ""
+        
+        stream = response.get('completion') 
+        if stream:
+            for event in stream:
+                if 'chunk' in event:
+                    chunk = event['chunk']
+                    if 'bytes' in chunk:
+                        decoded_chunk = chunk['bytes'].decode('utf-8')
+                        full_bot_response += decoded_chunk
+                        yield decoded_chunk 
+        
+        if full_bot_response:
+            save_message(
+                session_id=session_id_to_use,
+                role='bot',
+                content=full_bot_response
+            )
+            
     except Exception as e:
-        print(f"Error invoking Bedrock agent: {e}")
-        yield json.dumps({"error": f"Internal Server Error: {str(e)}"}).encode('utf-8')
+        print("--- !!! ERROR IN bedrock_service.stream_agent_response !!! ---")
+        traceback.print_exc()
+        print("--- !!! END OF bedrock_service TRACEBACK !!! ---")
+        raise e

@@ -19,7 +19,8 @@ const API_URL = '/api/chat'; // API 엔드포인트
 // ★★★ [로컬 테스트용] Cognito 토큰 ★★★
 // 로컬 테스트 시, AWS Cognito 콘솔에서 발급받은 '유효한' JWT 토큰을 여기에 붙여넣으세요.
 // Fargate 배포 시에는 실제 로그인 로직으로 대체되어야 합니다.
-const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiN0VSTjY2TnA2WWFHbzlqUEQwbWQxZyIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiIxYTgyYWIzNC01YTA3LTQyYzUtOTY3Ny0xOTQxMTc1MjIyNDkiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjI0NjE5NCwibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIyNDk3OTQsImlhdCI6MTc2MjI0NjE5NCwianRpIjoiMGYyN2FlYTQtNWFjZC00Mzc5LThmMTEtNWQxOWQ5MzE4OGE1IiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.ft_R6WiZW7w3FFSCSBpyB74pdGTZsc32LmIIcYXoAgFcMSFUX1mSevxuGwh4yb5cTX81Q-mhSYSQyYI-506V4kkIbUPSag0ASTYI_aS6aovu7xuhz0pyMJqA3iu_z0C_xE7EUIVK-54yan3TFM_TK0k7QWPn-DWVlxnb1NxVjm-FzuPSLUxyiAWloqjvwwLNA_YIKHqAbzascy0HatFCnCq5V7hM66HgHEuwIg79jTmbQIwJh-Px5YFA0UJnFaCV7ui3yYykAO6eth-fWTILSfCMZzupKvHQVZLlaJkUSVoCqRZIcuiW7UmukIwLrpyNmwUyM6g-eE6FhFtScHNALw&access_token=eyJraWQiOiJcL3cxMFJpSmxJVU5Ya29ObWN3bU11NGdNcGlSUm10a1gyRno0YTBEeThCUT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiNGY4MmQ4Yy0xMDAxLTcwMDEtOWI5OC1iNDJlZTEyMDUzYmMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwidmVyc2lvbiI6MiwiY2xpZW50X2lkIjoiNWVtNzRhaHFiaXVzc2N1YWJnZzdqMWR1Z2IiLCJldmVudF9pZCI6IjFhODJhYjM0LTVhMDctNDJjNS05Njc3LTE5NDExNzUyMjI0OSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4gcGhvbmUgb3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhdXRoX3RpbWUiOjE3NjIyNDYxOTQsImV4cCI6MTc2MjI0OTc5NCwiaWF0IjoxNzYyMjQ2MTk0LCJqdGkiOiIyOWYxZWE5YS00MWMzLTRmOGMtOGM1Yi1lYWUzMmNkMDEzYjIiLCJ1c2VybmFtZSI6Im1qa3dvbiJ9.Z6iwaSGQ86o5DUiz64tymCJZS6iT5foIpdCv1whGTw4TcYn0uWK7RaVJW0O9EXsafUTFDMTvWELx2vmbt6S1cdnins7A-1nV6g2O5woP8Qsil7Xc38O1ZP8fXzFVE1rHwhtNmYpA_ThbV8p9LHviKb-8D7nJYj7dBxk1Y14Bc4_hdU9qr09pWcVQIl9w26OtchKdy8mihgRpuc5vkZ-UmEl-6xM5GBcyfxRurhiMkDDSjb-RhDoaWySTDDC8b1kK2MZpJc_XDcTjVR-bkt5mT4mbvT6l3Ka7qUfJacB_0Kgv1vKPd19alOMIgTQttf-vaa6TEwIys-uabt-rFjVN7w"; 
+// ⭐️ (수정) &access_token=... 뒷부분을 모두 삭제
+const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiamNMV1JDWVI5SDFZWlY5TllyV001QSIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiJlNGMzNzUzNy0zMzk2LTQxMzgtOTJjNi02NWQ5MzIyZjQyMDEiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjI1NTU0OCwibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIyNTkxNDgsImlhdCI6MTc2MjI1NTU0OCwianRpIjoiNWU2MmQ2OTctOWM5My00ZjAwLTk2NDgtMDgxMzRmMzhkMDllIiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.Epn3Cab_8xZI8po4pKJj7d4Y2kWbINg187kwO8PAuAKzU5rSMj95hD5CwvlMFDaNih4u9kj-PtuwuKdC2iOX6JoMOwU6NmszbN6ra346QEtRhA-EdhvSBpp-3d8OdIOrekFVvvoDwTZwRh0af53bqJbcK-LMXfX-pcNX9icKjQS6dXjgzdTIqd7V27BSBHWBCnQ5gRZQaInt23S7F73lRjLsGwsHqsNlk2_2g8bgKLAntGXNxm3S2jAQDA4WQ48wRSaxuRy1oNXeMK8QGlrij7oHhHb6W7XqQnEiQP3xf-b77LKXkdMBUJLErrFtgAMGhGhKHrK653gbjLVYZQmY6Q";
 
 // ⭐️ "답변 중지" 기능용 전역 변수 (신규)
 let abortController = null;
@@ -152,6 +153,9 @@ async function sendMessage() {
     
     addMessageToUI(messageText, 'sent');
     chatInput.value = "";
+
+    // ⭐️ 이 줄을 추가하여 입력창을 비활성화합니다.
+    chatInput.disabled = true;
     
     // ⭐️ 1. "답변 생성하는 중입니다..." 텍스트로 봇 메시지 요소를 생성합니다.
     currentBotMessageElement = createMessageElement("답변 생성하는 중입니다...", 'received');
@@ -185,10 +189,9 @@ async function sendMessage() {
         if (!response.ok) {
             // ⭐️ 3. HTTP 오류 발생 시, "답변 생성..." 텍스트를 오류 메시지로 변경합니다.
             if (currentBotMessageElement) {
-                removeTypingIndicator(currentBotMessageElement);
+                removeTypingIndicator(currentBotMessageElement); 
                 let textSpan = currentBotMessageElement.querySelector('.message-text');
-                if(textSpan) textSpan.textContent = '죄송합니다. 오류가 발생했습니다.';
-                currentBotMessageElement.classList.add('error');
+                // ⭐️ textSpan.textContent = "" 라인을 삭제합니다.
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -198,13 +201,6 @@ async function sendMessage() {
         let streamingText = ""; 
         let isFirstChunk = true; // ⭐️ 첫 청크인지 확인
 
-        // ⭐️ 4. 스트림이 시작되면, "답변 생성..." 텍스트를 지우고 타이핑 인디케이터도 제거합니다.
-        removeTypingIndicator(currentBotMessageElement); 
-        let textSpan = currentBotMessageElement.querySelector('.message-text');
-        if (textSpan) {
-            textSpan.textContent = ""; // ⭐️ 로딩 텍스트를 비웁니다.
-        }
-
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
@@ -212,29 +208,49 @@ async function sendMessage() {
                 break;
             }
             
-            const chunkText = decoder.decode(value, { stream: true });
-            // ⭐️ 5. (핵심) 첫 청크가 sessionId JSON인지 확인
+            let chunkText = decoder.decode(value, { stream: true });
+
+            // ----------------------------------------------------
+            // ⭐️ (수정 1) sessionId 파싱 로직 ⭐️
+            // ----------------------------------------------------
             if (isFirstChunk) {
-                // 청크가 분리되어 올 수 있으므로, 시작 부분만 체크
-                if (chunkText.includes('{"sessionId":')) {
-                    // JSON 부분과 텍스트 부분을 분리 시도
-                    const jsonEndIndex = chunkText.indexOf('}') + 1;
-                    const jsonPart = chunkText.substring(0, jsonEndIndex).trim();
-                    const textPart = chunkText.substring(jsonEndIndex);
-
-                    try {
-                        const data = JSON.parse(jsonPart);
-                        if (data.sessionId) {
-                            currentSessionId = data.sessionId; // ⭐️ 새 세션 ID 저장
-                        }
-                        chunkText = textPart; // 텍스트 부분만 남김
-                    } catch (e) {
-                        // 파싱 실패 시, 일반 텍스트로 간주 (아래에서 처리)
+                try {
+                    // .trim()으로 백엔드의 \n 제거 후 JSON 파싱 시도
+                    const data = JSON.parse(chunkText.trim());
+                    
+                    if (data.sessionId) {
+                        // ⭐️ JSON 파싱 성공! (이 청크는 sessionId임)
+                        currentSessionId = data.sessionId; // 새 세션 ID 저장
+                        isFirstChunk = false; // 첫 청크(JSON) 처리 완료
+                        continue; // ⭐️ 화면에 렌더링하지 않고 다음 루프로 건너뛰기
                     }
+                } catch (e) {
+                    // 파싱 실패 (JSON이 아니거나, 쪼개진 경우)
+                    // (쪼개진 경우) 다음 청크를 기다리기 위해 isFirstChunk = true 유지
+                    if (chunkText.includes('{"sessionId":')) {
+                         console.log("Waiting for more JSON chunk...");
+                         continue; // ⭐️ 화면에 그리지 않고 건너뛰기
+                    }
+                    // (JSON이 아닌 첫 텍스트 청크인 경우) 아래 로직으로 이동
                 }
-                isFirstChunk = false; // ⭐️ 첫 청크 확인 완료
-            }
 
+                // ----------------------------------------------------
+                // ⭐️ (수정 2) "답변 생성중" 텍스트를 여기서 지웁니다.
+                // ----------------------------------------------------
+                // (sessionId 청크가 아니고, *첫 번째 실제 텍스트 청크*일 때)
+                
+                // (isFirstChunk 플래그를 한 번만 사용)
+                removeTypingIndicator(currentBotMessageElement); 
+                let textSpan = currentBotMessageElement.querySelector('.message-text');
+                if (textSpan) {
+                    textSpan.textContent = ""; // ⭐️ "답변 생성중..."을 비움
+                }
+                isFirstChunk = false; // ⭐️ 첫 텍스트 청크 처리가 끝났음을 표시
+            }
+            
+            // ----------------------------------------------------
+            // ⭐️ (수정 3) 텍스트를 화면에 추가
+            // ----------------------------------------------------
             streamingText += chunkText;
             
             let textSpan = currentBotMessageElement.querySelector('.message-text');
@@ -254,14 +270,19 @@ async function sendMessage() {
         if (error.name === 'AbortError') {
             console.log("Stream stopped by user.");
             if (currentBotMessageElement) {
+                // ⭐️ 1. "점점점" 인디케이터를 제거합니다.
+                removeTypingIndicator(currentBotMessageElement);
+
                 let textSpan = currentBotMessageElement.querySelector('.message-text');
                 if (textSpan) {
-                    if (textSpan.textContent === "") { // 답변이 시작되기 전 중단
-                        textSpan.textContent = "답변이 중지되었습니다.";
-                    } else {
-                        // 답변이 나오던 중 중단되면, 그냥 거기까지 표시
-                        finalizeMessage(currentBotMessageElement);
-                    }
+                    // ⭐️ 2. 텍스트를 "사용자가 질문을 중지했습니다."로 설정합니다.
+                    textSpan.textContent = "사용자가 질문을 중지했습니다.";
+                    
+                    // ⭐️ 3. (선택) 중지된 메시지도 에러처럼 보이도록 빨간색으로 표시
+                    currentBotMessageElement.classList.add('error');
+                    
+                    // ⭐️ 4. (제거) 복사 버튼은 추가하지 않습니다.
+                    // finalizeMessage(currentBotMessageElement); 
                 }
             }
         } else {
@@ -279,7 +300,15 @@ async function sendMessage() {
             }
         }
     } finally {
-        // ⭐️ (중요) 버튼을 "전송" 상태로 원상복구
+        // ⭐️ 1. (신규) 인디케이터가 남아있으면 확실히 제거합니다.
+        if (currentBotMessageElement) {
+            removeTypingIndicator(currentBotMessageElement);
+        }
+        
+        // ⭐️ 2. (신규) 입력창을 다시 활성화합니다.
+        chatInput.disabled = false;
+
+        // ⭐️ 3. 버튼을 "전송" 상태로 원상복구
         abortController = null; 
         sendButton.innerHTML = ICON_SEND;
         sendButton.title = "전송";
@@ -288,6 +317,9 @@ async function sendMessage() {
         currentBotMessageElement = null; 
         resetButton.style.display = 'flex'; // 홈 버튼 표시
         scrollToBottom();
+        
+        // ⭐️ 4. (신규) 사용자가 바로 입력할 수 있게 포커스
+        chatInput.focus();
     }
 }
 
@@ -337,7 +369,7 @@ function addMessageToUI(text, type) {
     const messageElement = createMessageElement(text, type);
     const quickReplies = chatBody.querySelector('.quick-reply-wrapper');
     if(quickReplies) quickReplies.remove(); // 퀵 리플라이 제거
-    
+
     // ⭐️ 이 2줄을 여기에 추가하세요 ⭐️
     const welcomeMsg = chatBody.querySelector('.welcome-message');
     if(welcomeMsg) welcomeMsg.remove(); // 인사말(welcome-message) 제거

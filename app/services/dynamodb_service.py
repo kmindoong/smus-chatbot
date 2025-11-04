@@ -1,39 +1,58 @@
-from app.core.config import settings
-from app.services.boto3_session import dynamodb # [수정] 중앙 Boto3 세션에서 임포트
+from datetime import datetime, timezone
+# ⭐️ boto3_session.py에서 초기화된 테이블 리소스를 가져옵니다.
+from app.services.boto3_session import sessions_table, messages_table
 
-try:
-    DYNAMODB_TABLE = dynamodb.Table(settings.DYNAMODB_SESSION_TABLE)
-    print(f"--- [DB] Successfully connected to DynamoDB table: {settings.DYNAMODB_SESSION_TABLE} ---")
-except Exception as e:
-    print(f"--- [DB FATAL] Failed to connect to DynamoDB: {e} ---")
-    DYNAMODB_TABLE = None
-
-def get_session_history(session_id: str) -> list:
-    """
-    DynamoDB에서 세션 기록을 조회합니다.
-    (session_id는 Cognito 'sub' 사용 권장)
-    """
-    if not DYNAMODB_TABLE: return []
+def create_session(user_id: str, session_id: str, title: str):
+    """(신규) sessions_table에 새 대화방을 생성합니다."""
     try:
-        response = DYNAMODB_TABLE.get_item(Key={'sessionId': session_id})
-        return response.get('Item', {}).get('history', [])
-    except Exception as e:
-        print(f"Error getting session from DynamoDB: {e}")
-        return []
-
-def update_session_history(session_id: str, user_prompt: str, bot_response: str):
-    """
-    DynamoDB에 세션 기록을 저장합니다.
-    """
-    if not DYNAMODB_TABLE: return
-    try:
-        DYNAMODB_TABLE.update_item(
-            Key={'sessionId': session_id},
-            UpdateExpression="SET history = list_append(if_not_exists(history, :empty_list), :new_message)",
-            ExpressionAttributeValues={
-                ':new_message': [{'user': user_prompt, 'bot': bot_response}],
-                ':empty_list': []
+        sessions_table.put_item(
+            Item={
+                'user_id': user_id,
+                'session_id': session_id,
+                'session_title': title[:100] # 제목은 100자로 제한
             }
         )
     except Exception as e:
-        print(f"Error updating session to DynamoDB: {e}")
+        print(f"Error creating session: {e}")
+
+def save_message(session_id: str, role: str, content: str):
+    """(신규) messages_table에 메시지를 저장합니다."""
+    try:
+        # 메시지 타임스탬프는 여기서 생성
+        timestamp = datetime.now(timezone.utc).isoformat()
+        messages_table.put_item(
+            Item={
+                'session_id': session_id,
+                'message_timestamp': timestamp,
+                'role': role,
+                'content': content
+            }
+        )
+    except Exception as e:
+        print(f"Error saving message: {e}")
+
+def get_sessions_by_user(user_id: str):
+    """(신규) 특정 사용자의 모든 대화 목록을 조회합니다."""
+    try:
+        response = sessions_table.query(
+            KeyConditionExpression='user_id = :uid',
+            ExpressionAttributeValues={':uid': user_id},
+            ScanIndexForward=False # 최신순 정렬
+        )
+        return response.get('Items', [])
+    except Exception as e:
+        print(f"Error getting sessions: {e}")
+        return []
+
+def get_messages_by_session(session_id: str):
+    """(신규) 특정 세션의 모든 메시지를 조회합니다."""
+    try:
+        response = messages_table.query(
+            KeyConditionExpression='session_id = :sid',
+            ExpressionAttributeValues={':sid': session_id}
+            # SK(message_timestamp)로 자동 정렬됨
+        )
+        return response.get('Items', [])
+    except Exception as e:
+        print(f"Error getting messages: {e}")
+        return []

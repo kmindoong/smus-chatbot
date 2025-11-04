@@ -1,66 +1,60 @@
-import traceback  # <--- 1. 파일 맨 위에 이 라인을 추가하세요.
+# app/api/endpoints.py
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from app.core.security import authenticate_user
+from app.core.security import authenticate_user 
 from app.services import bedrock_service, dynamodb_service
 
 router = APIRouter()
 
 class ChatRequest(BaseModel):
     message: str
-    # sessionId는 이제 토큰에서 자동으로 가져옵니다.
+    sessionId: str | None = None 
 
+# --- 1. /api/chat 엔드포인트 (async def -> def) ---
 @router.post("/chat")
-async def chat_with_bot(
+def chat_with_bot( # ⭐️ 'async' 삭제
     request: ChatRequest,
-    # [복원] Cognito 토큰을 검증하고 사용자의 고유 ID(sub)를 가져옵니다.
-    # user_sub: str = Depends(authenticate_user) 
+    user_sub: str = Depends(authenticate_user) 
 ):
     """
-    [인증 필요] Bedrock Agent와 스트리밍으로 대화합니다.
+    [수정] Bedrock Agent와 스트리밍 채팅을 하고, DynamoDB에 대화를 저장합니다.
+    (동기식으로 변경하여 블로킹 방지)
     """
     try:
-        # sessionId로 Cognito의 user_sub을 사용
-        user_sub = "mjkwon"
-        session_id = user_sub 
-        
-        streaming_generator = bedrock_service.invoke_agent_streaming(
-            session_id=session_id,
-            prompt=request.message
+        # ⭐️ bedrock_service의 동기식 제너레이터 호출
+        generator = bedrock_service.stream_agent_response(
+            user_sub=user_sub,
+            session_id=request.sessionId, 
+            message_text=request.message
         )
         
-        # (이전과 동일한 스트리밍 수집 및 DynamoDB 저장 로직)
-        full_response_text = ""
-        async for chunk in streaming_generator:
-            full_response_text += chunk.decode('utf-8')
+        return StreamingResponse(generator, media_type='text/event-stream')
 
-        if "error" not in full_response_text:
-             dynamodb_service.update_session_history(
-                 session_id, 
-                 request.message, 
-                 full_response_text
-             )
-        
-        async def final_streamer(text):
-            yield text.encode('utf-8')
-
-        return StreamingResponse(
-            final_streamer(full_response_text), 
-            media_type="text/event-stream"
-        )
-        
-    except Exception as e:  # <--- 3. 이 except 블록 전체를 추가하세요.
-        print("\n--- !!! 💥 ERROR IN /api/chat ENDPOINT !!! ---")
-
-        # 콘솔에 상세한 오류 내역(Traceback)을 강제로 출력
-        traceback.print_exc() 
-
-        print(f"--- ERROR DETAILS: {e} ---")
-        print("--- !!! END OF TRACEBACK !!! ---\n")
-
-        # 클라이언트에게도 500 오류를 보냄
+    except Exception as e:
+        print(f"Error in chat_with_bot endpoint: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"Internal server error: {str(e)}"
         )
+    
+# --- 2. /api/sessions 엔드포인트 (async def -> def) ---
+@router.get("/sessions")
+def get_sessions( # ⭐️ 'async' 삭제
+    user_sub: str = Depends(authenticate_user)
+):
+    sessions = dynamodb_service.get_sessions_by_user(user_id=user_sub)
+    return sessions
+
+# --- 3. /api/messages/{id} 엔드포인트 (async def -> def) ---
+@router.get("/messages/{session_id}")
+def get_messages( # ⭐️ 'async' 삭제
+    session_id: str, 
+    user_sub: str = Depends(authenticate_user)
+):
+    # (보안 검증)
+    messages = dynamodb_service.get_messages_by_session(session_id=session_id)
+    if not messages:
+        raise HTTPException(status_code=404, detail="Messages not found")
+    return messages
