@@ -3,7 +3,6 @@ __pycache__/
 *.pyc
 .git/
 .vscode/
-tests/
 
 # Virtual environment
 .venv/

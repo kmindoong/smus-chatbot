@@ -1,0 +1,67 @@
+{
+  "identifier": "bl4k4rbfix626w",
+  "name": "cloudtrail_logs",
+  "project": "admin-project-533616270150",
+  "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+  "metadata": {
+    "ResponseMetadata": {
+      "RequestId": "5e8a42d8-ab91-42a2-9483-1c6a06ccedad",
+      "HTTPStatusCode": 200,
+      "HTTPHeaders": {
+        "content-type": "application/json",
+        "content-length": "2379",
+        "connection": "keep-alive",
+        "date": "Wed, 29 Oct 2025 06:15:58 GMT",
+        "x-amzn-trace-id": "Root=1-6901b11e-70e4da63676ab2d72c0565f0",
+        "x-amzn-requestid": "5e8a42d8-ab91-42a2-9483-1c6a06ccedad",
+        "x-amz-apigw-id": "TMiczGZqIE0EPBA=",
+        "x-cache": "Miss from cloudfront",
+        "via": "1.1 64238c1e409ec4df6b2aae4502dae038.cloudfront.net (CloudFront)",
+        "x-amz-cf-pop": "IAD55-P7",
+        "x-amz-cf-id": "b1j6UVl6h59bQMospZRkFkVYl5qqLygnYDtTvBnWbQ5ntoYQvVSSng=="
+      },
+      "RetryAttempts": 0
+    },
+    "createdAt": "2025-10-13 14:28:17.589000+09:00",
+    "createdBy": "SYSTEM",
+    "domainId": "dzd-cjvglgj4d43fmg",
+    "externalIdentifier": "arn:aws:glue:ap-northeast-2:533616270150:table/glue-db-cjh220/cloudtrail_logs.akis412ankp388",
+    "firstRevisionCreatedAt": "2025-10-13 14:28:17.589000+09:00",
+    "firstRevisionCreatedBy": "SYSTEM",
+    "formsOutput": [
+      {
+        "content": "{\"catalogId\":\"533616270150\",\"databaseName\":\"glue-db-cjh220\",\"columns\":[{\"dataType\":\"array<struct<eventVersion:string,userIdentity:string,eventTime:string,eventSource:string,eventName:string,awsRegion:string,sourceIPAddress:string,userAgent:string,errorCode:string,errorMessage:string,requestParameters:string,responseElements:string,additionalEventData:string,requestID:string,eventID:string,readOnly:string,resources:string,eventType:string,recipientAccountId:string,vpcEndpointId:string>>\",\"columnName\":\"records\"}],\"sourceLocation\":\"s3://aws-cloudtrail-logs-533616270150-a2566569/AWSLogs/533616270150/CloudTrail/ap-northeast-2/2025/09/24\",\"updateTime\":\"2025-09-24T08:09:26Z\",\"compressionType\":\"gzip\",\"region\":\"ap-northeast-2\",\"tableArn\":\"arn:aws:glue:ap-northeast-2:533616270150:table/glue-db-cjh220/cloudtrail_logs\",\"tableName\":\"cloudtrail_logs\"}",
+        "formName": "GlueTableForm",
+        "typeName": "amazon.datazone.GlueTableFormType",
+        "typeRevision": "10"
+      },
+      {
+        "content": "{\"dataSourceIdentifier\":{\"id\":\"ahbvl5b0at4p3s\",\"version\":\"latest\"},\"filterableDataSourceId\":\"ahbvl5b0at4p3s\",\"dataSourceRunId\":\"d194sgb0rg3920\",\"dataSourceType\":\"GLUE\"}",
+        "formName": "DataSourceReferenceForm",
+        "typeName": "amazon.datazone.DataSourceReferenceFormType",
+        "typeRevision": "3"
+      },
+      {
+        "content": "{\"approvalRequired\":\"YES\"}",
+        "formName": "SubscriptionTermsForm",
+        "typeName": "amazon.datazone.SubscriptionTermsFormType",
+        "typeRevision": "2"
+      },
+      {
+        "content": "{\"sourceIdentifier\":\"arn:aws:glue:ap-northeast-2:533616270150:table/glue-db-cjh220/cloudtrail_logs\"}",
+        "formName": "AssetCommonDetailsForm",
+        "typeName": "amazon.datazone.AssetCommonDetailsFormType",
+        "typeRevision": "3"
+      }
+    ],
+    "id": "bl4k4rbfix626w",
+    "latestTimeSeriesDataPointFormsOutput": [],
+    "name": "cloudtrail_logs",
+    "owningProjectId": "akis412ankp388",
+    "readOnlyFormsOutput": [],
+    "revision": "1",
+    "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+    "typeRevision": "13"
+  },
+  "schema": null
+}
