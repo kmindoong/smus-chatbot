@@ -409,6 +409,8 @@ body.dark-mode .reset-chat:hover { background-color: #444; color: #ffffff; }
     opacity: 0;
     transition: opacity 0.2s, background-color 0.2s, color 0.2s;
     position: relative; /* 툴팁 기준점 */
+
+    margin-left: auto; /* ⭐️ 3. (신규) 텍스트와 분리하여 강제로 우측 정렬 */
 }
 .message.received:hover .copy-button { opacity: 1; }
 .message .copy-button:hover { background-color: #dee2e6; color: #212529; }
@@ -484,20 +486,77 @@ body.dark-mode .message .copy-button.copied { background-color: #2e5934; color: 
     overflow-y: auto;
 }
 
-/* 대화 목록 아이템 */
+/* ⭐️ li 태그의 기존 스타일을 수정 (flexbox로 변경) */
 #history-list li {
     padding: 12px 10px;
     border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
     transition: background-color 0.2s;
-    font-size: 0.95rem;
-    color: #555;
+    /* ⭐️ 아래 3줄 추가 */
+    display: flex;
+    flex-direction: column; /* 세로로 쌓기 */
+    gap: 4px; /* 제목과 시간 사이 간격 */
 }
+
 #history-list li:last-child {
     border-bottom: none;
 }
 #history-list li:hover {
     background-color: #f9f9f9;
+}
+
+/* ⭐️ 제목 스타일 (신규) */
+.history-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    /* 텍스트가 길어지면 ... 처리 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ⭐️ 시간 스타일 (신규) */
+.history-time {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* ⭐️ 8-1. 이전 대화 모달 다크 모드 (신규) ⭐️ */
+
+/* 모달 본체 (배경/그림자) */
+body.dark-mode .modal-content {
+    background-color: #3b3b3b; /* 어두운 배경 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 모달 닫기 버튼 (X) */
+body.dark-mode .modal-close {
+    color: #aaa;
+}
+body.dark-mode .modal-close:hover,
+body.dark-mode .modal-close:focus {
+    color: #eee;
+}
+
+/* 모달 제목 (글자색/테두리) */
+body.dark-mode .modal-content h2 {
+    color: #f1f1f1;
+    border-bottom-color: #555;
+}
+
+/* (다크 모드 스타일) */
+body.dark-mode #history-list li {
+    border-bottom-color: #444;
+}
+body.dark-mode #history-list li:hover {
+    background-color: #333;
+}
+body.dark-mode .history-title {
+    color: #f1f1f1;
+}
+body.dark-mode .history-time {
+    color: #aaa;
 }
 
 /* 모달 애니메이션 */
@@ -572,4 +631,117 @@ body.dark-mode .message .copy-button.copied { background-color: #2e5934; color: 
 }
 .send-button.stop-button:hover {
     background-color: #c82333; /* 더 어두운 빨간색 */
+}
+
+/* --- 9. 전체 화면 로더 (이전 대화 로딩용) --- */
+
+.loader-overlay {
+    display: none; /* ⭐️ 평소에는 숨김 */
+    position: absolute; /* 챗봇 컨테이너 기준 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 2000; /* 모달보다 위에 */
+    justify-content: center;
+    align-items: center;
+}
+body.dark-mode .loader-overlay {
+    background-color: rgba(44, 44, 44, 0.8); /* 다크 모드 배경 */
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #555;
+}
+body.dark-mode .loader-content {
+    color: #ddd;
+}
+
+.loader-spinner {
+    width: 32px;
+    height: 32px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #007bff; /* 파란색 스피너 */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+body.dark-mode .loader-spinner {
+    border-color: #555;
+    border-top-color: #007bff;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- 10. 답변 버블 내 중지 버튼 (신규) --- */
+.stop-generation-button {
+    flex-shrink: 0;
+    width: 25px;
+    height: 25px;
+    background-color: #dc3545; /* ⭐️ 진한 빨간색 배경 */
+    border: none;
+    border-radius: 50%;
+    color: #ffffff; /* ⭐️ 흰색 아이콘 */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative; /* 툴팁 기준점 */
+}
+
+.stop-generation-button:hover {
+    background-color: #c82333; /* ⭐️ 더 진한 빨간색 */
+    color: #ffffff; 
+}
+
+/* 툴팁 (기존 .icon-button 툴팁과 유사하게) */
+.stop-generation-button[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* --- 11. 로딩 버블 레이아웃 (신규) --- */
+
+/* ⭐️ 로딩 버블일 때만 세로로 쌓기 ⭐️ */
+.message.received.loading-bubble .message-content-wrapper {
+    flex-direction: column; /* ⭐️ 가로(row) -> 세로(column) */
+    align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+/* ⭐️ 로딩 텍스트 (신규) ⭐️ */
+/* (createMessageElement가 .message-text를 사용하므로 기존 스타일이 적용됨) */
+
+/* ⭐️ 타이핑 인디케이터 패딩 수정 */
+.typing-indicator {
+    display: flex;
+    /* padding: 10px 15px; */ /* ⭐️ 패딩을 래퍼가 하도록 제거 */
+    padding-top: 5px; /* 텍스트와의 간격 */
+}
+
+/* ⭐️ 중지 버튼을 왼쪽 정렬 (신규) */
+.message.received.loading-bubble .stop-generation-button {
+    margin-top: 8px; /* 인디케이터와의 간격 */
+    margin-left: auto; /* ⭐️ (신규) 버튼을 오른쪽으로 밀어냄 */
 }

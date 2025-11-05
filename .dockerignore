@@ -1,3 +1,5 @@
+# .dockerignore
+
 # Git
 .git/
 .gitignore
@@ -9,9 +11,15 @@ __pycache__/
 # OS Files
 .DS_Store
 
-# IDE / Config
-.vscode/
-.env
+# Python 가상환경
+.venv
+venv
+*/.venv
+*/venv
+
+# 환경 변수 파일 (중요!)
+.env.local
+.env*
 
 # Test Files (배포 이미지에 포함 불필요)
 tests/

@@ -20,7 +20,7 @@ const API_URL = '/api/chat'; // API 엔드포인트
 // 로컬 테스트 시, AWS Cognito 콘솔에서 발급받은 '유효한' JWT 토큰을 여기에 붙여넣으세요.
 // Fargate 배포 시에는 실제 로그인 로직으로 대체되어야 합니다.
 // ⭐️ (수정) &access_token=... 뒷부분을 모두 삭제
-const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiamNMV1JDWVI5SDFZWlY5TllyV001QSIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiJlNGMzNzUzNy0zMzk2LTQxMzgtOTJjNi02NWQ5MzIyZjQyMDEiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjI1NTU0OCwibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIyNTkxNDgsImlhdCI6MTc2MjI1NTU0OCwianRpIjoiNWU2MmQ2OTctOWM5My00ZjAwLTk2NDgtMDgxMzRmMzhkMDllIiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.Epn3Cab_8xZI8po4pKJj7d4Y2kWbINg187kwO8PAuAKzU5rSMj95hD5CwvlMFDaNih4u9kj-PtuwuKdC2iOX6JoMOwU6NmszbN6ra346QEtRhA-EdhvSBpp-3d8OdIOrekFVvvoDwTZwRh0af53bqJbcK-LMXfX-pcNX9icKjQS6dXjgzdTIqd7V27BSBHWBCnQ5gRZQaInt23S7F73lRjLsGwsHqsNlk2_2g8bgKLAntGXNxm3S2jAQDA4WQ48wRSaxuRy1oNXeMK8QGlrij7oHhHb6W7XqQnEiQP3xf-b77LKXkdMBUJLErrFtgAMGhGhKHrK653gbjLVYZQmY6Q";
+const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiR0tiMHVTdDZkd25zRVNDTkt5VWFWUSIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiI1ZDYyNGE2Yy1hNDU3LTRlNmItOWIwNi1kMGI1YmY5NmFlMjYiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjMyNTQxMywibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIzMjkwMTMsImlhdCI6MTc2MjMyNTQxMywianRpIjoiMjU4ODk3MzMtM2UwMS00MWRhLTg2NTEtOWU2NmRkY2Q0NDQ4IiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.v4OSPlNODMixleFkRuy6fu7puXvhCQZbwM3ZX5h1ywyBSPScbtxpsaJyrwy9FQHM34ghKgweBeU3jtkWI-diBPlBz78Fc7nQ5HDnq5jPKorqhpRa0TNEq11zjNlbT3HGZlwUoutC7rwAHoG-uFvzEksCd3gdpchztmDKjfb6k3Jp-uACdn3kpBQABX3arcZ2qAX-Q9i9ck9Rc5_xIxICdcYyOFAOFTQi3lM6xlUA7Z7n5_gL1MIFo7P1cNT5igA9-58NTbRaRU8VGLu4daXfzGFdCdafqUVCY2l3HIPKB6iBsRd5ZPCbK-suKZdUyt0Wh_soWM3Xu_ZOjLH3sIKLiQ";
 
 // ⭐️ "답변 중지" 기능용 전역 변수 (신규)
 let abortController = null;
@@ -34,30 +34,55 @@ function stopGeneration() {
     }
 }
 
-// ⭐️ 1. 이 함수를 새로 추가합니다. (Send와 Stop을 모두 처리)
-function handleSendClick() {
-    if (abortController) {
-        // "중지" 버튼 상태일 때: 중지 함수 호출
-        stopGeneration();
-    } else {
-        // "전송" 버튼 상태일 때: 메시지 전송
-        sendMessage();
-    }
-}
-
 // ⭐️ 3. 세션 ID 관리를 위한 전역 변수
 let currentSessionId = null;
 let currentBotMessageElement = null; // 현재 봇 응답을 저장할 임시 변수
 
+function initializeAuth() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // --- 로컬 테스트 환경 ---
+        console.log("Running in local mode. Using LOCAL_TEST_TOKEN.");
+        authToken = LOCAL_TEST_TOKEN;
+    } else {
+        // --- Fargate (프로덕션) 환경 ---
+        console.log("Running in Fargate/Prod mode. Requesting token from parent window.");
+        
+        // 1. 부모 창으로부터 토큰 수신 대기
+        window.addEventListener('message', (event) => {
+            // ⭐️ 보안: (필수) 'https://your-main-portal.com'을 실제 부모 창의 도메인으로 변경하세요.
+            // if (event.origin !== 'https://your-main-portal.com') { 
+            //    console.warn('Message received from untrusted origin:', event.origin);
+            //    return;
+            // }
+
+            if (event.data && event.data.type === 'cognito-id-token') {
+                if (event.data.token) {
+                    console.log("Received token from parent window.");
+                    authToken = event.data.token;
+                } else {
+                    console.error("Token message received from parent, but token is empty.");
+                }
+            }
+        });
+
+        // 2. 부모 창에 챗봇이 준비되었음을 알림 (토큰 요청)
+        window.parent.postMessage('chatbot-ready-for-token', '*'); 
+    }
+}
+
 // --- 1. 이벤트 리스너 ---
-document.addEventListener('DOMContentLoaded', initializeChat);
-sendButton.addEventListener('click', handleSendClick); // ⭐️ sendMessage -> handleSendClick
+document.addEventListener('DOMContentLoaded', () => {
+    initializeChat(); // 기존 함수
+    initializeAuth(); // ⭐️ (신규) 인증 초기화 함수 호출
+});
+
+sendButton.addEventListener('click', sendMessage);
 
 chatInput.addEventListener('keydown', (e) => {
     // ⭐️ event.isComposing이 false일 때만(한글 조합이 끝났을 때만) Enter가 작동하도록 수정
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
         e.preventDefault(); // 줄바꿈 방지
-        handleSendClick(); // ⭐️ sendMessage -> handleSendClick
+        sendMessage();
     }
 });
 darkModeButton.addEventListener('click', () => {
@@ -87,7 +112,7 @@ function initializeChat() {
     <div class="quick-reply-wrapper">
         <button class="quick-reply">담당자 정보 알려줘</button>
         <button class="quick-reply">데이터를 활용하고 싶은데 신청 방법은?</button>
-        <button class="quick-reply">안전보건 데이터를 확인하고 싶어, 어떤 테이블을 확인해야 해?</button>
+        <button class="quick-reply">VDI 설정 방법 알려줘</button>
     </div>`;
     chatBottomSpacer.insertAdjacentHTML('beforebegin', quickReplyHTML);
     
@@ -104,7 +129,7 @@ function initializeChat() {
 function handleQuickReplyClick(e) {
     const question = e.target.textContent;
     chatInput.value = question;
-    handleSendClick(); // ⭐️ sendMessage -> handleSendClick
+    sendMessage();
 }
 
 // [최종] 복사 버튼 클릭 처리 (http:// 환경용 execCommand)
@@ -147,110 +172,101 @@ function handleChatBodyClick(e) {
 }
 
 // [최종] 스트리밍 sendMessage 함수
+// ⭐️ 이 함수 전체를 덮어쓰세요 (약 258라인 ~ 423라인) ⭐️
 async function sendMessage() {
     const messageText = chatInput.value.trim();
-    if (messageText === "" || abortController) return; // ⭐️ 이미 실행 중이면 중복 실행 방지
+    if (messageText === "" || abortController) return; // ⭐️ 중복/빈 메시지 전송 방지
     
+    // 1. 사용자 메시지 추가 (인사말/퀵 리플라이 제거)
     addMessageToUI(messageText, 'sent');
     chatInput.value = "";
 
-    // ⭐️ 이 줄을 추가하여 입력창을 비활성화합니다.
+    // 2. 입력창/전송 버튼 비활성화
     chatInput.disabled = true;
+    sendButton.disabled = true;
     
-    // ⭐️ 1. "답변 생성하는 중입니다..." 텍스트로 봇 메시지 요소를 생성합니다.
-    currentBotMessageElement = createMessageElement("답변 생성하는 중입니다...", 'received');
-    
+    // 3. ⭐️ 로딩 버블 *하나만* 생성
+    currentBotMessageElement = createMessageElement("답변 생성하는 중입니다...", 'received loading-bubble');
     chatBody.insertBefore(currentBotMessageElement, chatBottomSpacer); 
     
-    // ⭐️ 2. addTypingIndicator는 점(dot) 애니메이션을 추가할 수 있으니 그대로 둡니다.
-    // (이제 "답변 생성하는 중입니다..." 텍스트와 점 애니메이션이 같이 보일 것입니다.)
+    // 4. 타이핑 인디케이터 추가
     addTypingIndicator(currentBotMessageElement);
+    
+    // 5. "중지" 버튼 생성 및 추가
+    const stopButton = document.createElement('button');
+    stopButton.className = 'stop-generation-button';
+    stopButton.title = "중지";
+    stopButton.innerHTML = ICON_STOP; 
+    stopButton.addEventListener('click', stopGeneration);
+    currentBotMessageElement.querySelector('.message-content-wrapper').appendChild(stopButton);
 
     try {
-        // ⭐️ 1. AbortController 생성 및 버튼 교체
+        // 6. AbortController 생성
         abortController = new AbortController();
-        sendButton.innerHTML = ICON_STOP;
-        sendButton.title = "중지";
-        sendButton.classList.add('stop-button'); // ⭐️ 빨간색 클래스 추가
 
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + TEMP_AUTH_TOKEN
+                'Authorization': 'Bearer ' + authToken // ⭐️ TEMP_AUTH_TOKEN -> authToken
             },
             body: JSON.stringify({ 
                 message: messageText,
                 sessionId: currentSessionId
             }),
-            signal: abortController.signal // ⭐️ 2. fetch에 중단 신호 연결
+            signal: abortController.signal 
         });
 
         if (!response.ok) {
-            // ⭐️ 3. HTTP 오류 발생 시, "답변 생성..." 텍스트를 오류 메시지로 변경합니다.
-            if (currentBotMessageElement) {
-                removeTypingIndicator(currentBotMessageElement); 
-                let textSpan = currentBotMessageElement.querySelector('.message-text');
-                // ⭐️ textSpan.textContent = "" 라인을 삭제합니다.
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // HTTP 오류 발생 시
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
         }
         
         const reader = response.body.getReader();
         const decoder = new TextDecoder('utf-8');
         let streamingText = ""; 
-        let isFirstChunk = true; // ⭐️ 첫 청크인지 확인
+        let isFirstChunk = true; // 첫 청크(sessionId 또는 텍스트)인지 확인
 
+        // 7. 스트리밍 루프 시작
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
-                finalizeMessage(currentBotMessageElement); // 스트림 끝나면 복사 버튼 추가
+                // 스트림 정상 종료 시
+                finalizeMessage(currentBotMessageElement); // 복사 버튼 추가
                 break;
             }
             
             let chunkText = decoder.decode(value, { stream: true });
 
-            // ----------------------------------------------------
-            // ⭐️ (수정 1) sessionId 파싱 로직 ⭐️
-            // ----------------------------------------------------
             if (isFirstChunk) {
                 try {
-                    // .trim()으로 백엔드의 \n 제거 후 JSON 파싱 시도
+                    // 8. sessionId 파싱 시도
                     const data = JSON.parse(chunkText.trim());
-                    
                     if (data.sessionId) {
-                        // ⭐️ JSON 파싱 성공! (이 청크는 sessionId임)
-                        currentSessionId = data.sessionId; // 새 세션 ID 저장
-                        isFirstChunk = false; // 첫 청크(JSON) 처리 완료
-                        continue; // ⭐️ 화면에 렌더링하지 않고 다음 루프로 건너뛰기
+                        currentSessionId = data.sessionId; // 세션 ID 저장
+                        isFirstChunk = false; // JSON 청크 처리 완료
+                        continue; // 이 청크는 화면에 그리지 않고 건너뛰기
                     }
                 } catch (e) {
-                    // 파싱 실패 (JSON이 아니거나, 쪼개진 경우)
-                    // (쪼개진 경우) 다음 청크를 기다리기 위해 isFirstChunk = true 유지
+                    // JSON 파싱 실패
                     if (chunkText.includes('{"sessionId":')) {
                          console.log("Waiting for more JSON chunk...");
-                         continue; // ⭐️ 화면에 그리지 않고 건너뛰기
+                         continue; // 쪼개진 JSON이므로 다음 청크 기다림
                     }
-                    // (JSON이 아닌 첫 텍스트 청크인 경우) 아래 로직으로 이동
                 }
 
-                // ----------------------------------------------------
-                // ⭐️ (수정 2) "답변 생성중" 텍스트를 여기서 지웁니다.
-                // ----------------------------------------------------
-                // (sessionId 청크가 아니고, *첫 번째 실제 텍스트 청크*일 때)
+                // 9. ⭐️ 첫 *실제 텍스트* 청크 도착 시 로딩 UI 정리
+                currentBotMessageElement.classList.remove('loading-bubble'); // 세로 정렬 CSS 제거
                 
-                // (isFirstChunk 플래그를 한 번만 사용)
-                removeTypingIndicator(currentBotMessageElement); 
                 let textSpan = currentBotMessageElement.querySelector('.message-text');
                 if (textSpan) {
-                    textSpan.textContent = ""; // ⭐️ "답변 생성중..."을 비움
+                    textSpan.textContent = ""; // "답변 생성중입니다..." 텍스트 제거
                 }
-                isFirstChunk = false; // ⭐️ 첫 텍스트 청크 처리가 끝났음을 표시
+                isFirstChunk = false; // 첫 텍스트 청크 처리 완료
             }
             
-            // ----------------------------------------------------
-            // ⭐️ (수정 3) 텍스트를 화면에 추가
-            // ----------------------------------------------------
+            // 10. 텍스트 화면에 누적
             streamingText += chunkText;
             
             let textSpan = currentBotMessageElement.querySelector('.message-text');
@@ -266,59 +282,50 @@ async function sendMessage() {
         }
 
     } catch (error) {
-        // ⭐️ 3. 중단 시 오류 처리
+        // 11. 오류 처리 (중지 또는 기타 에러)
         if (error.name === 'AbortError') {
             console.log("Stream stopped by user.");
             if (currentBotMessageElement) {
-                // ⭐️ 1. "점점점" 인디케이터를 제거합니다.
+                currentBotMessageElement.classList.remove('loading-bubble');
                 removeTypingIndicator(currentBotMessageElement);
-
                 let textSpan = currentBotMessageElement.querySelector('.message-text');
                 if (textSpan) {
-                    // ⭐️ 2. 텍스트를 "사용자가 질문을 중지했습니다."로 설정합니다.
                     textSpan.textContent = "사용자가 질문을 중지했습니다.";
-                    
-                    // ⭐️ 3. (선택) 중지된 메시지도 에러처럼 보이도록 빨간색으로 표시
-                    currentBotMessageElement.classList.add('error');
-                    
-                    // ⭐️ 4. (제거) 복사 버튼은 추가하지 않습니다.
-                    // finalizeMessage(currentBotMessageElement); 
                 }
+                currentBotMessageElement.classList.add('error');
             }
         } else {
             console.error('Error fetching stream response:', error);
-            // ⭐️ 5. (중요) HTTP 오류가 아닌 다른 예외(네트워크 오류 등)가 발생했을 때도 텍스트를 변경합니다.
             if (currentBotMessageElement) {
+                currentBotMessageElement.classList.remove('loading-bubble');
                 removeTypingIndicator(currentBotMessageElement);
                 let textSpan = currentBotMessageElement.querySelector('.message-text');
-                
-                // 텍스트가 "답변 생성..." 상태일 때만 오류 메시지로 덮어씁니다.
                 if(textSpan && (textSpan.textContent === '답변 생성하는 중입니다...' || textSpan.textContent === '')) {
-                    textSpan.textContent = '죄송합니다. 오류가 발생했습니다.';
+                    textSpan.textContent = `죄송합니다. 오류가 발생했습니다: ${error.message}`;
                 }
                 currentBotMessageElement.classList.add('error');
             }
         }
     } finally {
-        // ⭐️ 1. (신규) 인디케이터가 남아있으면 확실히 제거합니다.
-        if (currentBotMessageElement) {
-            removeTypingIndicator(currentBotMessageElement);
-        }
-        
-        // ⭐️ 2. (신규) 입력창을 다시 활성화합니다.
-        chatInput.disabled = false;
+        // 12. ⭐️ (중요) 항상 실행되는 마무리 작업
+        chatInput.disabled = false; // 입력창 활성화
+        sendButton.disabled = false; // 전송 버튼 활성화
 
-        // ⭐️ 3. 버튼을 "전송" 상태로 원상복구
+        // ⭐️ 5. (수정) 버블 내 로딩 요소들 (중지 버튼, 점점점)을 모두 제거
+        if (currentBotMessageElement) {
+            const stopBtn = currentBotMessageElement.querySelector('.stop-generation-button');
+            if (stopBtn) stopBtn.remove();
+            
+            // ⭐️ (신규) "점점점" 인디케이터도 여기서 확실히 제거합니다.
+            removeTypingIndicator(currentBotMessageElement); 
+        }
+
+        // ⭐️ 6. (수정) 기존 'sendButton' 원상복구 로직 삭제
         abortController = null; 
-        sendButton.innerHTML = ICON_SEND;
-        sendButton.title = "전송";
-        sendButton.classList.remove('stop-button'); // ⭐️ 빨간색 클래스 제거
 
         currentBotMessageElement = null; 
-        resetButton.style.display = 'flex'; // 홈 버튼 표시
+        resetButton.style.display = 'flex';
         scrollToBottom();
-        
-        // ⭐️ 4. (신규) 사용자가 바로 입력할 수 있게 포커스
         chatInput.focus();
     }
 }
@@ -386,7 +393,7 @@ function addTypingIndicator(targetElement) {
     
     const typingIndicator = document.createElement('div');
     typingIndicator.classList.add('typing-indicator'); 
-    typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+    typingIndicator.innerHTML = '<span></span><span></span><span></span>';
     contentWrapper.appendChild(typingIndicator);
     scrollToBottom();
 }
@@ -402,12 +409,30 @@ function scrollToBottom() {
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
+/**
+ * ISO 8601 문자열(UTC)을 'YYYY-MM-DD HH:MM:SS' (로컬 시간)으로 변환합니다.
+ */
+function formatTimestamp(isoString) {
+    const date = new Date(isoString); // 'Z'가 붙어있어 UTC로 인식되고, 로컬 시간대로 자동 변환됩니다.
+    
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작
+    const dd = String(date.getDate()).padStart(2, '0');
+    
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    
+    // 사용자가 요청한 '시:분:초' 형식
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+}
+
 // ⭐️ 7. "이전 대화" 버튼 클릭 시
 prevChatButton.addEventListener('click', async () => {
     try {
         // 백엔드에서 세션 목록 가져오기 (⭐️ API_SESSIONS_URL은 실제 경로로 변경)
         const response = await fetch('/api/sessions', {
-            headers: { 'Authorization': 'Bearer ' + TEMP_AUTH_TOKEN }
+            headers: { 'Authorization': 'Bearer ' + authToken } // ⭐️ TEMP_AUTH_TOKEN -> authToken
         });
         if (!response.ok) throw new Error('대화 목록 로드 실패');
         
@@ -419,9 +444,19 @@ prevChatButton.addEventListener('click', async () => {
         } else {
             sessions.forEach(session => {
                 const li = document.createElement('li');
-                // ⭐️ (수정 필요) session.session_title 대신 실제 DynamoDB의 '제목' 속성을 사용
-                li.textContent = session.session_title || (new Date(session.session_id)).toLocaleString();
-                li.dataset.sessionId = session.session_id; // ⭐️ li에 세션 ID 저장
+            
+                // ⭐️ 1. 제목과 시간을 가져옵니다.
+                const title = session.session_title || "제목 없음";
+                // ⭐️ 2. 방금 추가한 헬퍼 함수로 시간 포맷팅
+                const time = formatTimestamp(session.session_id); 
+                
+                // ⭐️ 3. 텍스트 대신 HTML을 사용하여 두 줄로 표시
+                li.innerHTML = `
+                    <span class="history-title">${title}</span>
+                    <span class="history-time">${time}</span>
+                `;
+                
+                li.dataset.sessionId = session.session_id; // 세션 ID 저장
                 historyList.appendChild(li);
             });
         }
@@ -436,8 +471,12 @@ prevChatButton.addEventListener('click', async () => {
 
 // ⭐️ 8. 모달의 목록 아이템 클릭 시
 historyList.addEventListener('click', (event) => {
-    if (event.target.tagName === 'LI' && event.target.dataset.sessionId) {
-        const sessionId = event.target.dataset.sessionId;
+    // ⭐️ 1. 클릭된 지점에서 가장 가까운 'li' 태그를 찾습니다.
+    const clickedLi = event.target.closest('li');
+    
+    // ⭐️ 2. 'li'를 찾았고, 'sessionId' 데이터가 있는지 확인합니다.
+    if (clickedLi && clickedLi.dataset.sessionId) {
+        const sessionId = clickedLi.dataset.sessionId;
         loadChatHistory(sessionId); // 해당 대화 불러오기
     }
 });
@@ -457,11 +496,18 @@ window.addEventListener('click', (event) => {
 // ⭐️ 11. 특정 대화 내역 불러오기 함수 (신규)
 async function loadChatHistory(sessionId) {
     if (!sessionId) return;
+
+    // ⭐️ (디버깅) F12(개발자 도구) 콘솔에 이 로그가 찍히는지 확인
+    console.log(`[DEBUG] loadChatHistory 호출됨! Session ID: ${sessionId}`);
+
+    // ⭐️ 1. 로더(프로그레스바) 보이기
+    const loader = document.getElementById('loader-overlay');
+    loader.style.display = 'flex';
     
     try {
         // 백엔드에서 메시지 목록 가져오기 (⭐️ API_MESSAGES_URL은 실제 경로로 변경)
         const response = await fetch(`/api/messages/${sessionId}`, {
-            headers: { 'Authorization': 'Bearer ' + TEMP_AUTH_TOKEN }
+            headers: { 'Authorization': 'Bearer ' + authToken } // ⭐️ TEMP_AUTH_TOKEN -> authToken
         });
         if (!response.ok) throw new Error('대화 내역 로드 실패');
         
@@ -484,5 +530,8 @@ async function loadChatHistory(sessionId) {
     } catch (error) {
         console.error('Error loading chat messages:', error);
         alert('대화 내역을 불러오는 데 실패했습니다.');
+    } finally {
+        // ⭐️ 2. 로딩이 성공하든 실패하든, 로더 숨기기
+        loader.style.display = 'none';
     }
 }

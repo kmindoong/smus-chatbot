@@ -16,10 +16,41 @@
 
     <iframe 
         id="chatbot-frame"
-        src="./chatbot.html"
+        src="http://smus-chatbot-alb-292713957.ap-northeast-2.elb.amazonaws.com/chatbot.html"
         frameborder="0"
         title="SMUS 봇">
     </iframe>
+
+    <script>
+        const chatbotIframe = document.getElementById('chatbot-iframe');
+        
+        // ⭐️ (중요) 챗봇이 호스팅되는 실제 주소 (ALB DNS) ⭐️
+        const CHATBOT_IFRAME_ORIGIN = 'http://smus-chatbot-alb-292713957.ap-northeast-2.elb.amazonaws.com';
+    
+        window.addEventListener('message', (event) => {
+            // ⭐️ 보안: 챗봇이 보낸 메시지인지 출처(origin)를 확인
+            if (event.origin !== CHATBOT_IFRAME_ORIGIN) { 
+                return;
+            }
+    
+            // 5. 챗봇이 "준비됐다"는 메시지를 보내면
+            if (event.data === 'chatbot-ready-for-token') {
+                
+                // ⭐️ 부모 창의 Cognito ID 토큰 가져오기 (예: localStorage)
+                const cognitoIdToken = localStorage.getItem('CognitoIdToken'); 
+                
+                if (cognitoIdToken) {
+                    // 6. 챗봇 iframe에 토큰을 전송
+                    chatbotIframe.contentWindow.postMessage({
+                        type: 'cognito-id-token',
+                        token: cognitoIdToken 
+                    }, CHATBOT_IFRAME_ORIGIN); 
+                } else {
+                    console.error("Parent window: Cognito token not found.");
+                }
+            }
+        });
+    </script>
 
     <button id="chatbot-toggle-button-right" class="chatbot-toggle-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
