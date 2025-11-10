@@ -18,9 +18,10 @@ const API_URL = '/api/chat'; // API 엔드포인트
 
 // ★★★ [로컬 테스트용] Cognito 토큰 ★★★
 // 로컬 테스트 시, AWS Cognito 콘솔에서 발급받은 '유효한' JWT 토큰을 여기에 붙여넣으세요.
-// Fargate 배포 시에는 실제 로그인 로직으로 대체되어야 합니다.
-// ⭐️ (수정) &access_token=... 뒷부분을 모두 삭제
-const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiR0tiMHVTdDZkd25zRVNDTkt5VWFWUSIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiI1ZDYyNGE2Yy1hNDU3LTRlNmItOWIwNi1kMGI1YmY5NmFlMjYiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjMyNTQxMywibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIzMjkwMTMsImlhdCI6MTc2MjMyNTQxMywianRpIjoiMjU4ODk3MzMtM2UwMS00MWRhLTg2NTEtOWU2NmRkY2Q0NDQ4IiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.v4OSPlNODMixleFkRuy6fu7puXvhCQZbwM3ZX5h1ywyBSPScbtxpsaJyrwy9FQHM34ghKgweBeU3jtkWI-diBPlBz78Fc7nQ5HDnq5jPKorqhpRa0TNEq11zjNlbT3HGZlwUoutC7rwAHoG-uFvzEksCd3gdpchztmDKjfb6k3Jp-uACdn3kpBQABX3arcZ2qAX-Q9i9ck9Rc5_xIxICdcYyOFAOFTQi3lM6xlUA7Z7n5_gL1MIFo7P1cNT5igA9-58NTbRaRU8VGLu4daXfzGFdCdafqUVCY2l3HIPKB6iBsRd5ZPCbK-suKZdUyt0Wh_soWM3Xu_ZOjLH3sIKLiQ";
+// const TEMP_AUTH_TOKEN = "eyJraWQiOiJCRzdheVg2d016YXRDbFlsdFN2K3BUTVFWUDFBVWlmdjFnRjd2UlFMTlE4PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiR0tiMHVTdDZkd25zRVNDTkt5VWFWUSIsInN1YiI6ImI0ZjgyZDhjLTEwMDEtNzAwMS05Yjk4LWI0MmVlMTIwNTNiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfMkJna1dFaFhFIiwiY29nbml0bzp1c2VybmFtZSI6Im1qa3dvbiIsImF1ZCI6IjVlbTc0YWhxYml1c3NjdWFiZ2c3ajFkdWdiIiwiZXZlbnRfaWQiOiI1ZDYyNGE2Yy1hNDU3LTRlNmItOWIwNi1kMGI1YmY5NmFlMjYiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTc2MjMyNTQxMywibmFtZSI6Im1pbmplb25nIGt3b24iLCJleHAiOjE3NjIzMjkwMTMsImlhdCI6MTc2MjMyNTQxMywianRpIjoiMjU4ODk3MzMtM2UwMS00MWRhLTg2NTEtOWU2NmRkY2Q0NDQ4IiwiZW1haWwiOiJtamt3b24wMjI2QGdtYWlsLmNvbSJ9.v4OSPlNODMixleFkRuy6fu7puXvhCQZbwM3ZX5h1ywyBSPScbtxpsaJyrwy9FQHM34ghKgweBeU3jtkWI-diBPlBz78Fc7nQ5HDnq5jPKorqhpRa0TNEq11zjNlbT3HGZlwUoutC7rwAHoG-uFvzEksCd3gdpchztmDKjfb6k3Jp-uACdn3kpBQABX3arcZ2qAX-Q9i9ck9Rc5_xIxICdcYyOFAOFTQi3lM6xlUA7Z7n5_gL1MIFo7P1cNT5igA9-58NTbRaRU8VGLu4daXfzGFdCdafqUVCY2l3HIPKB6iBsRd5ZPCbK-suKZdUyt0Wh_soWM3Xu_ZOjLH3sIKLiQ";
+
+let authToken = null; // ⭐️ Fargate와 로컬 모두에서 사용할 전역 변수
+
 
 // ⭐️ "답변 중지" 기능용 전역 변수 (신규)
 let abortController = null;
@@ -38,37 +39,40 @@ function stopGeneration() {
 let currentSessionId = null;
 let currentBotMessageElement = null; // 현재 봇 응답을 저장할 임시 변수
 
+/**
+ * ⭐️ 2. (신규) 인증을 초기화하는 함수
+ * Fargate/로컬 구분 없이 무조건 부모 창에 토큰을 요청합니다.
+ */
 function initializeAuth() {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        // --- 로컬 테스트 환경 ---
-        console.log("Running in local mode. Using LOCAL_TEST_TOKEN.");
-        authToken = LOCAL_TEST_TOKEN;
-    } else {
-        // --- Fargate (프로덕션) 환경 ---
-        console.log("Running in Fargate/Prod mode. Requesting token from parent window.");
-        
-        // 1. 부모 창으로부터 토큰 수신 대기
-        window.addEventListener('message', (event) => {
-            // ⭐️ 보안: (필수) 'https://your-main-portal.com'을 실제 부모 창의 도메인으로 변경하세요.
-            // if (event.origin !== 'https://your-main-portal.com') { 
-            //    console.warn('Message received from untrusted origin:', event.origin);
-            //    return;
-            // }
+    console.log("Chatbot Iframe: Requesting token from parent window.");
+    
+    // 1. 부모 창으로부터 토큰 수신 대기
+    window.addEventListener('message', (event) => {
+        // ⭐️ 보안: (필수) 실제 부모 창(포털)의 도메인으로 변경하세요.
+        // if (event.origin !== 'http://[ALB_DNS]') { 
+        //    return;
+        // }
 
-            if (event.data && event.data.type === 'cognito-id-token') {
-                if (event.data.token) {
-                    console.log("Received token from parent window.");
-                    authToken = event.data.token;
-                } else {
-                    console.error("Token message received from parent, but token is empty.");
-                }
+        if (event.data && event.data.type === 'cognito-id-token') {
+            if (event.data.token) {
+                console.log("Chatbot Iframe: Received token.");
+                authToken = event.data.token;
+            } else {
+                console.error("Chatbot Iframe: Token message received, but token is empty.");
             }
-        });
+        }
+    });
 
-        // 2. 부모 창에 챗봇이 준비되었음을 알림 (토큰 요청)
-        window.parent.postMessage('chatbot-ready-for-token', '*'); 
-    }
+    // 2. 부모 창에 챗봇이 준비되었음을 알림 (토큰 요청)
+    // ⭐️ '*' 대신 실제 부모 도메인을 사용해야 합니다. (운영 시)
+    window.parent.postMessage('chatbot-ready-for-token', '*'); 
 }
+
+// --- 1. 이벤트 리스너 ---
+document.addEventListener('DOMContentLoaded', () => {
+    initializeChat(); // 기존 함수
+    initializeAuth(); // ⭐️ 3. (신규) 인증 초기화 함수 호출
+});
 
 // --- 1. 이벤트 리스너 ---
 document.addEventListener('DOMContentLoaded', () => {

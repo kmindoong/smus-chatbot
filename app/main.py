@@ -45,6 +45,7 @@ app.add_middleware(
 app.include_router(endpoints.router, prefix="/api")
 
 # 정적 파일(UI) 마운트
-# app/main.py 기준, 같은 폴더 내의 'frontend' 디렉토리를 / 에 마운트
 frontend_dir = Path(__file__).parent / "frontend"
+# ⭐️ 이 설정이 /index.html, /login.html, /chatbot.html을 모두 서비스합니다.
+# (수정 불필요. 올바르게 설정되어 있음)
 app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="static")

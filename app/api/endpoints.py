@@ -5,9 +5,22 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.core.security import authenticate_user 
 from app.services import bedrock_service, dynamodb_service
+from app.core.config import settings # ⭐️ settings 임포트
 
 router = APIRouter()
 
+# ⭐️ [추가] 프론트엔드 설정을 위한 모델
+class AppConfig(BaseModel):
+    chatbotUiUrl: str
+
+# ⭐️ [추가] 프론트엔드에 설정을 전달하는 엔드포인트
+@router.get("/config", response_model=AppConfig)
+def get_app_config():
+    """
+    프론트엔드에 필요한 환경별 설정을 반환합니다.
+    (예: 챗봇 iframe의 src URL)
+    """
+    return AppConfig(chatbotUiUrl=settings.CHATBOT_UI_URL)
 class ChatRequest(BaseModel):
     message: str
     sessionId: str | None = None 

@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     DYNAMODB_SESSION_TABLE: str | None = None
     DYNAMODB_MESSAGES_TABLE: str | None = None
 
+    # ⭐️ [추가] 챗봇 UI의 URL. 로컬을 기본값으로 설정
+    CHATBOT_UI_URL: str = "./chatbot.html"
+
     @property
     def is_local(self) -> bool:
         """로컬 환경인지 확인"""

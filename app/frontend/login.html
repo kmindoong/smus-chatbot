@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMUS 챗봇 로그인</title>
+    <script src="./vendor/amazon-cognito-identity.min.js"></script>
+
+    <style>
+        /* 간단한 로그인 폼 스타일 */
+        body { font-family: sans-serif; display: grid; place-items: center; min-height: 90vh; background-color: #f4f4f4; }
+        .login-box { background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .login-box div { margin-bottom: 15px; }
+        .login-box label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .login-box input { width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .login-box button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #error-message { color: red; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>SMUS 챗봇 로그인</h2>
+        <div id="error-message"></div>
+        <div>
+            <label for="username">사용자 ID:</label>
+            <input type="text" id="username" value="mjkwon"> 
+        </div>
+        <div>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password">
+        </div>
+        <button id="login-button">로그인</button>
+    </div>
+
+    <script>
+        // 1. Cognito User Pool 정보 설정
+        const poolData = {
+            UserPoolId: 'ap-northeast-2_2BgkWEhXE',
+            ClientId: '7gilt6es9nfhq7eud203t4bq7n'
+        };
+        const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+        const loginButton = document.getElementById('login-button');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+
+        // 2. 로그인 버튼 클릭 시
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+            errorMessage.textContent = "";
+
+            const authenticationData = {
+                Username: username,
+                Password: password,
+            };
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+            
+            const userData = {
+                Username: username,
+                Pool: userPool
+            };
+            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+            // 3. Cognito에 인증 시도
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: (session) => {
+                    console.log('Authentication successful');
+                    
+                    // 4. 로그인 성공 시 ID 토큰(JWT)을 가져옴
+                    const idToken = session.getIdToken().getJwtToken();
+
+                    // 5. ⭐️ 토큰을 localStorage에 저장
+                    localStorage.setItem('CognitoIdToken', idToken);
+                    
+                    // 6. ⭐️ index.html로 이동 (상대 경로 사용)
+                    window.location.href = 'index.html'; 
+
+                },
+                onFailure: (err) => {
+                    console.error('Error signing in:', err);
+                    errorMessage.textContent = '로그인 실패: ' + err.message;
+                },
+            });
+        });
+    </script>
+</body>
+</html>
