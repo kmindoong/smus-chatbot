@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     DYNAMODB_SESSION_TABLE: str | None = None
     DYNAMODB_MESSAGES_TABLE: str | None = None
 
+    # ⭐️ [추가] DataZone 도메인 ID
+    DATAZONE_DOMAIN_ID: str = "dzd-3ojk7mnm02q5lk"
+
     # ⭐️ [추가] 챗봇 UI의 URL. 로컬을 기본값으로 설정
     CHATBOT_UI_URL: str = "./chatbot.html"
 
@@ -41,8 +44,8 @@ def get_settings() -> Settings:
         if not settings.is_local:
             required_vars = [
                 'COGNITO_USER_POOL_ID', 'COGNITO_APP_CLIENT_ID',
-                'BEDROCK_AGENT_ID', 'BEDROCK_AGENT_ALIAS_ID',
-                'DYNAMODB_SESSION_TABLE', 'DYNAMODB_MESSAGES_TABLE'
+                'DYNAMODB_SESSION_TABLE', 'DYNAMODB_MESSAGES_TABLE',
+                'DATAZONE_DOMAIN_ID' # ⭐️ [추가]
             ]
             missing_vars = [var for var in required_vars if getattr(settings, var) is None]
             if missing_vars:

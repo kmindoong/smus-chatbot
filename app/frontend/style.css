@@ -122,6 +122,36 @@ body.chatbot-body {
     color: #343a40;
     transition: color 0.3s;
 }
+
+/* ⭐️ [신규] Agent 선택 Select 박스 스타일 */
+.agent-selector {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #343a40;
+    background-color: transparent;
+    border: none;
+    padding-right: 20px; /* 화살표 공간 */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    /* ⭐️ Select 화살표 아이콘 (간단한 CSS로) */
+    background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.2rem center;
+    background-size: 0.9em;
+    max-width: 150px; /* ⭐️ 헤더가 깨지지 않도록 최대 너비 제한 */
+}
+.agent-selector:focus {
+    outline: none;
+}
+/* 다크 모드 Select 스타일 */
+body.dark-mode .agent-selector {
+    color: #f1f1f1;
+    background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f1f1f1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+/* ⭐️ [끝] */
+
 /* [최종] 툴팁 기준점을 위해 position: relative 추가 */
 .chat-header .icon-button {
     display: inline-flex;

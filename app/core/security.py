@@ -20,8 +20,7 @@ except requests.exceptions.RequestException as e:
 
 def authenticate_user(token: str = Security(oauth2_scheme)):
     """
-    Cognito JWT 토큰을 검증하고 사용자 'sub' (고유 ID)를 반환합니다.
-    (⭐️ jwt.decode()를 사용하도록 수정됨)
+    ⭐️ [수정] Cognito JWT 토큰을 검증하고 'sub' 대신 'claims' 객체 전체를 반환합니다.
     """
     try:
         # 1. 토큰 헤더 파싱
@@ -34,8 +33,8 @@ def authenticate_user(token: str = Security(oauth2_scheme)):
             raise HTTPException(status_code=403, detail="Public key not found in JWKS")
         
         # ⭐️ [디버깅 추가] 서버의 현재 UTC 시간을 타임스탬프로 출력
-        import time
-        print(f"--- [AUTH DEBUG] Server Time: {int(time.time())} ---")
+        # import time
+        # print(f"--- [AUTH DEBUG] Server Time: {int(time.time())} ---")
 
         # ⭐️ 3. [수정] 토큰 검증 (서명, 만료, 대상, 발급자 모두 한 번에)
         # 4~7단계 수동 검증 로직을 아래 decode 함수가 모두 대체합니다.
@@ -47,8 +46,8 @@ def authenticate_user(token: str = Security(oauth2_scheme)):
             issuer=f"https://cognito-idp.{settings.AWS_REGION}.amazonaws.com/{settings.COGNITO_USER_POOL_ID}" # ⭐️ 발급자(iss) 검증 (필수)
         )
         
-        # 4. 검증 성공 시 사용자 정보 반환
-        return claims['sub']
+        # 4. ⭐️ [수정] 'sub' 대신 claims 딕셔너리 전체를 반환합니다.
+        return claims
 
     except jwt.ExpiredSignatureError:
         # ⭐️ 라이브러리가 직접 만료 오류를 잡아줍니다.

@@ -12,9 +12,13 @@ const prevChatButton = document.querySelector('.prev-chat-button'); // ⭐️ �
 const historyModal = document.getElementById('history-modal');
 const modalCloseBtn = document.querySelector('.modal-close');
 const historyList = document.getElementById('history-list');
+const agentSelector = document.getElementById('agent-selector'); // ⭐️ [신규]
 
 // ⭐️ 2. API URL 및 인증 토큰 (기존 코드)
-const API_URL = '/api/chat'; // API 엔드포인트
+const API_URL_CHAT = '/api/chat'; // ⭐️ [수정]
+const API_URL_AGENTS = '/api/agents'; // ⭐️ [신규]
+const API_URL_SESSIONS = '/api/sessions'; // ⭐️ [신규]
+const API_URL_MESSAGES_BASE = '/api/messages'; // ⭐️ [신규]
 
 // ★★★ [로컬 테스트용] Cognito 토큰 ★★★
 // 로컬 테스트 시, AWS Cognito 콘솔에서 발급받은 '유효한' JWT 토큰을 여기에 붙여넣으세요.
@@ -22,9 +26,12 @@ const API_URL = '/api/chat'; // API 엔드포인트
 
 let authToken = null; // ⭐️ Fargate와 로컬 모두에서 사용할 전역 변수
 
-
 // ⭐️ "답변 중지" 기능용 전역 변수 (신규)
 let abortController = null;
+// ⭐️ 세션 ID 관리를 위한 전역 변수
+let currentSessionId = null;
+let currentBotMessageElement = null; 
+
 // ⭐️ 전송/중지 SVG 아이콘 (신규)
 const ICON_SEND = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>`; //
 const ICON_STOP = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`; // (정지 아이콘)
@@ -34,10 +41,6 @@ function stopGeneration() {
         abortController.abort("User stopped generation."); // ⭐️ fetch 중단
     }
 }
-
-// ⭐️ 3. 세션 ID 관리를 위한 전역 변수
-let currentSessionId = null;
-let currentBotMessageElement = null; // 현재 봇 응답을 저장할 임시 변수
 
 /**
  * ⭐️ 2. (신규) 인증을 초기화하는 함수
@@ -57,8 +60,14 @@ function initializeAuth() {
             if (event.data.token) {
                 console.log("Chatbot Iframe: Received token.");
                 authToken = event.data.token;
+
+                // ⭐️ [신규] 토큰을 받은 후 즉시 Agent 목록 로드
+                loadAvailableAgents(); 
             } else {
                 console.error("Chatbot Iframe: Token message received, but token is empty.");
+
+                // ⭐️ 오류 메시지를 UI에 표시
+                addMessageToUI("인증 토큰을 가져오는 데 실패했습니다. 창을 닫고 다시 시도해 주세요.", "received error");
             }
         }
     });
@@ -68,15 +77,61 @@ function initializeAuth() {
     window.parent.postMessage('chatbot-ready-for-token', '*'); 
 }
 
-// --- 1. 이벤트 리스너 ---
-document.addEventListener('DOMContentLoaded', () => {
-    initializeChat(); // 기존 함수
-    initializeAuth(); // ⭐️ 3. (신규) 인증 초기화 함수 호출
-});
+// ⭐️ [신규] Agent 목록을 서버에서 가져와 Select 박스에 채우는 함수
+async function loadAvailableAgents() {
+    if (!authToken) return;
+
+    try {
+        const response = await fetch(API_URL_AGENTS, {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load agents: ${response.statusText}`);
+        }
+        
+        const agents = await response.json(); // 백엔드에서 온 agent_mapping
+        
+        agentSelector.innerHTML = ''; // "로드 중..." 옵션 제거
+        
+        const agentNames = Object.keys(agents);
+        
+        if (agentNames.length === 0) {
+            agentSelector.innerHTML = '<option value="">사용 가능한 Agent 없음</option>';
+            // 챗봇 기능 비활성화
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            addMessageToUI("현재 사용자에게 할당된 챗봇 Agent가 없습니다.", "received error");
+            return;
+        }
+
+        // ⭐️ Select 박스에 옵션 추가
+        agentNames.forEach(agentName => {
+            const agentInfo = agents[agentName];
+            const option = document.createElement('option');
+            option.textContent = agentName;
+            // ⭐️ value 대신 dataset에 agentId와 aliasId를 저장 (더 안전함)
+            option.dataset.agentId = agentInfo.agent_id;
+            option.dataset.agentAliasId = agentInfo.alias_id;
+            agentSelector.appendChild(option);
+        });
+
+        // ⭐️ Agent 변경 시 채팅방 초기화
+        agentSelector.addEventListener('change', initializeChat);
+        
+        // ⭐️ 첫 번째 Agent로 채팅방 초기화 실행
+        initializeChat(); 
+
+    } catch (error) {
+        console.error('Error loading available agents:', error);
+        agentSelector.innerHTML = '<option value="">Agent 로드 실패</option>';
+        addMessageToUI(`Agent 목록 로드 실패: ${error.message}`, "received error");
+    }
+}
 
 // --- 1. 이벤트 리스너 ---
 document.addEventListener('DOMContentLoaded', () => {
-    initializeChat(); // 기존 함수
+    // initializeChat(); // 기존 함수
     initializeAuth(); // ⭐️ (신규) 인증 초기화 함수 호출
 });
 
@@ -107,26 +162,34 @@ chatBody.addEventListener('click', handleChatBodyClick); // 복사 버튼 리스
 function initializeChat() {
     chatBody.innerHTML = ''; 
     chatBody.appendChild(chatBottomSpacer);
-    // 'welcome-message' 클래스로 인사말 식별
-    const welcomeMsg = createMessageElement("안녕하세요, 권민정님. 학습도우미 'SMUS 봇'이에요.", 'received welcome-message');
-    chatBody.insertBefore(welcomeMsg, chatBottomSpacer);
+     // ⭐️ [수정] 선택된 Agent의 이름을 가져와서 인사말에 사용
+     const selectedAgentName = agentSelector.options[agentSelector.selectedIndex]?.textContent || "SMUS 챗봇";
     
+     const welcomeMsg = createMessageElement(`안녕하세요, ${selectedAgentName}입니다. 무엇을 도와드릴까요?`, 'received welcome-message');
+     chatBody.insertBefore(welcomeMsg, chatBottomSpacer);
+    
+     // ⭐️ [주석 처리] 퀵 리플라이는 Agent마다 다를 수 있으므로 일단 비활성화
     // 퀵 리플라이 버튼 HTML
-    const quickReplyHTML = `
-    <div class="quick-reply-wrapper">
-        <button class="quick-reply">담당자 정보 알려줘</button>
-        <button class="quick-reply">데이터를 활용하고 싶은데 신청 방법은?</button>
-        <button class="quick-reply">VDI 설정 방법 알려줘</button>
-    </div>`;
-    chatBottomSpacer.insertAdjacentHTML('beforebegin', quickReplyHTML);
+    // const quickReplyHTML = `
+    // <div class="quick-reply-wrapper">
+    //     <button class="quick-reply">담당자 정보 알려줘</button>
+    //     <button class="quick-reply">데이터를 활용하고 싶은데 신청 방법은?</button>
+    //     <button class="quick-reply">VDI 설정 방법 알려줘</button>
+    // </div>`;
+    // chatBottomSpacer.insertAdjacentHTML('beforebegin', quickReplyHTML);
     
-    // 퀵 리플라이 버튼에 이벤트 리스너 연결
-    document.querySelectorAll('.quick-reply').forEach(button => {
-        button.addEventListener('click', handleQuickReplyClick);
-    });
+    // // 퀵 리플라이 버튼에 이벤트 리스너 연결
+    // document.querySelectorAll('.quick-reply').forEach(button => {
+    //     button.addEventListener('click', handleQuickReplyClick);
+    // });
     
     // chatBody.appendChild(resetButton); // 홈 버튼 다시 추가
-    resetButton.style.display = 'none'; // 첫 화면에서는 숨김
+
+
+    resetButton.style.display = 'none'; // 홈 버튼 숨김
+    currentSessionId = null; // ⭐️ 세션 ID 초기화 (중요)
+    chatInput.disabled = false;
+    chatInput.focus();
 }
 
 // [최종] 퀵 리플라이 클릭 처리
@@ -181,6 +244,15 @@ async function sendMessage() {
     const messageText = chatInput.value.trim();
     if (messageText === "" || abortController) return; // ⭐️ 중복/빈 메시지 전송 방지
     
+    // ⭐️ [신규] 현재 선택된 Agent 정보 가져오기
+    const selectedOption = agentSelector.options[agentSelector.selectedIndex];
+    if (!selectedOption || !selectedOption.dataset.agentId) {
+        addMessageToUI("오류: 유효한 Agent가 선택되지 않았습니다.", 'received error');
+        return;
+    }
+    const currentAgentId = selectedOption.dataset.agentId;
+    const currentAgentAliasId = selectedOption.dataset.agentAliasId;
+
     // 1. 사용자 메시지 추가 (인사말/퀵 리플라이 제거)
     addMessageToUI(messageText, 'sent');
     chatInput.value = "";
@@ -208,15 +280,18 @@ async function sendMessage() {
         // 6. AbortController 생성
         abortController = new AbortController();
 
-        const response = await fetch(API_URL, {
+        // ⭐️ [수정] fetch API 경로 및 body 변경
+        const response = await fetch(API_URL_CHAT, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + authToken // ⭐️ TEMP_AUTH_TOKEN -> authToken
+                'Authorization': 'Bearer ' + authToken
             },
             body: JSON.stringify({ 
                 message: messageText,
-                sessionId: currentSessionId
+                sessionId: currentSessionId,
+                agentId: currentAgentId,         // ⭐️ [추가]
+                agentAliasId: currentAgentAliasId  // ⭐️ [추가]
             }),
             signal: abortController.signal 
         });
@@ -378,8 +453,8 @@ function finalizeMessage(messageElement) {
 // [최종] 메시지 UI 추가
 function addMessageToUI(text, type) {
     const messageElement = createMessageElement(text, type);
-    const quickReplies = chatBody.querySelector('.quick-reply-wrapper');
-    if(quickReplies) quickReplies.remove(); // 퀵 리플라이 제거
+    // const quickReplies = chatBody.querySelector('.quick-reply-wrapper');
+    // if(quickReplies) quickReplies.remove(); // 퀵 리플라이 제거
 
     // ⭐️ 이 2줄을 여기에 추가하세요 ⭐️
     const welcomeMsg = chatBody.querySelector('.welcome-message');
@@ -388,6 +463,113 @@ function addMessageToUI(text, type) {
     chatBody.insertBefore(messageElement, chatBottomSpacer); // ⭐️ (수정)
     resetButton.style.display = 'flex'; // 홈 버튼 표시
     scrollToBottom();
+}
+
+// ⭐️ [수정] "이전 대화" 목록 불러오기 (API_URL_SESSIONS 사용)
+async function loadChatHistoryList() {
+    try {
+        const response = await fetch(API_URL_SESSIONS, { // ⭐️ [수정]
+            headers: { 'Authorization': 'Bearer ' + authToken } 
+        });
+        if (!response.ok) throw new Error('대화 목록 로드 실패');
+        
+        const sessions = await response.json();
+        
+        historyList.innerHTML = ''; 
+        if (sessions.length === 0) {
+            historyList.innerHTML = '<li>이전 대화가 없습니다.</li>';
+        } else {
+            sessions.forEach(session => {
+                const li = document.createElement('li');
+                const title = session.session_title || "제목 없음";
+                const time = formatTimestamp(session.session_id); 
+                
+                li.innerHTML = `
+                    <span class="history-title">${title}</span>
+                    <span class="history-time">${time}</span>
+                `;
+                
+                li.dataset.sessionId = session.session_id; 
+                historyList.appendChild(li);
+            });
+        }
+        historyModal.style.display = 'block'; 
+        
+    } catch (error) {
+        console.error('Error loading history:', error);
+        alert('이전 대화를 불러오는 데 실패했습니다.');
+    }
+}
+
+// ⭐️ 7. "이전 대화" 버튼 클릭 시
+prevChatButton.addEventListener('click', loadChatHistoryList); // ⭐️ [수정] 함수 이름 변경
+
+// ⭐️ 8. 모달의 목록 아이템 클릭 시
+historyList.addEventListener('click', (event) => {
+    // ⭐️ 1. 클릭된 지점에서 가장 가까운 'li' 태그를 찾습니다.
+    const clickedLi = event.target.closest('li');
+    
+    // ⭐️ 2. 'li'를 찾았고, 'sessionId' 데이터가 있는지 확인합니다.
+    if (clickedLi && clickedLi.dataset.sessionId) {
+        const sessionId = clickedLi.dataset.sessionId;
+        loadChatHistory(sessionId); // 해당 대화 불러오기
+    }
+});
+
+// ⭐️ 9. 모달 닫기 버튼
+modalCloseBtn.addEventListener('click', () => {
+    historyModal.style.display = 'none';
+});
+
+// ⭐️ 10. 모달 바깥쪽 클릭 시 닫기
+window.addEventListener('click', (event) => {
+    if (event.target == historyModal) {
+        historyModal.style.display = 'none';
+    }
+});
+
+// ⭐️ 11. 특정 대화 내역 불러오기 함수 (신규)
+async function loadChatHistory(sessionId) {
+    if (!sessionId) return;
+
+    // ⭐️ (디버깅) F12(개발자 도구) 콘솔에 이 로그가 찍히는지 확인
+    console.log(`[DEBUG] loadChatHistory 호출됨! Session ID: ${sessionId}`);
+
+    // ⭐️ 1. 로더(프로그레스바) 보이기
+    const loader = document.getElementById('loader-overlay');
+    loader.style.display = 'flex';
+    
+    try {
+        // 백엔드에서 메시지 목록 가져오기 (⭐️ API_MESSAGES_URL은 실제 경로로 변경)
+        const response = await fetch(`${API_URL_MESSAGES_BASE}/${sessionId}`, { // ⭐️ [수정]
+            headers: { 'Authorization': 'Bearer ' + authToken } // ⭐️ TEMP_AUTH_TOKEN -> authToken
+        });
+        if (!response.ok) throw new Error('대화 내역 로드 실패');
+        
+        const messages = await response.json(); // [{role: 'user', content: '...'}, ...]
+        
+        chatBody.innerHTML = ''; // 현재 챗봇창 비우기
+        chatBody.appendChild(chatBottomSpacer);
+        
+        messages.forEach(msg => {
+            const senderType = (msg.role === 'user') ? 'sent' : 'received';
+            const messageElement = createMessageElement(msg.content, senderType);
+            chatBody.insertBefore(messageElement, chatBottomSpacer);
+        });
+        
+        currentSessionId = sessionId; // ⭐️ 현재 세션을 이 ID로 설정
+        historyModal.style.display = 'none'; // 모달 닫기
+        resetButton.style.display = 'flex'; // 홈 버튼 표시
+        scrollToBottom();
+        
+    } catch (error) {
+        console.error('Error loading chat messages:', error);
+        alert('대화 내역을 불러오는 데 실패했습니다.');
+    } finally {
+        // ⭐️ 2. 로딩이 성공하든 실패하든, 로더 숨기기
+        loader.style.display = 'none';
+    }
+
 }
 
 // [최종] 타이핑 인디케이터 (메시지 버블 안에 추가)
@@ -429,113 +611,4 @@ function formatTimestamp(isoString) {
     
     // 사용자가 요청한 '시:분:초' 형식
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
-}
-
-// ⭐️ 7. "이전 대화" 버튼 클릭 시
-prevChatButton.addEventListener('click', async () => {
-    try {
-        // 백엔드에서 세션 목록 가져오기 (⭐️ API_SESSIONS_URL은 실제 경로로 변경)
-        const response = await fetch('/api/sessions', {
-            headers: { 'Authorization': 'Bearer ' + authToken } // ⭐️ TEMP_AUTH_TOKEN -> authToken
-        });
-        if (!response.ok) throw new Error('대화 목록 로드 실패');
-        
-        const sessions = await response.json();
-        
-        historyList.innerHTML = ''; // 기존 목록 비우기
-        if (sessions.length === 0) {
-            historyList.innerHTML = '<li>이전 대화가 없습니다.</li>';
-        } else {
-            sessions.forEach(session => {
-                const li = document.createElement('li');
-            
-                // ⭐️ 1. 제목과 시간을 가져옵니다.
-                const title = session.session_title || "제목 없음";
-                // ⭐️ 2. 방금 추가한 헬퍼 함수로 시간 포맷팅
-                const time = formatTimestamp(session.session_id); 
-                
-                // ⭐️ 3. 텍스트 대신 HTML을 사용하여 두 줄로 표시
-                li.innerHTML = `
-                    <span class="history-title">${title}</span>
-                    <span class="history-time">${time}</span>
-                `;
-                
-                li.dataset.sessionId = session.session_id; // 세션 ID 저장
-                historyList.appendChild(li);
-            });
-        }
-        
-        historyModal.style.display = 'block'; // 모달 보이기
-        
-    } catch (error) {
-        console.error('Error loading history:', error);
-        alert('이전 대화를 불러오는 데 실패했습니다.');
-    }
-});
-
-// ⭐️ 8. 모달의 목록 아이템 클릭 시
-historyList.addEventListener('click', (event) => {
-    // ⭐️ 1. 클릭된 지점에서 가장 가까운 'li' 태그를 찾습니다.
-    const clickedLi = event.target.closest('li');
-    
-    // ⭐️ 2. 'li'를 찾았고, 'sessionId' 데이터가 있는지 확인합니다.
-    if (clickedLi && clickedLi.dataset.sessionId) {
-        const sessionId = clickedLi.dataset.sessionId;
-        loadChatHistory(sessionId); // 해당 대화 불러오기
-    }
-});
-
-// ⭐️ 9. 모달 닫기 버튼
-modalCloseBtn.addEventListener('click', () => {
-    historyModal.style.display = 'none';
-});
-
-// ⭐️ 10. 모달 바깥쪽 클릭 시 닫기
-window.addEventListener('click', (event) => {
-    if (event.target == historyModal) {
-        historyModal.style.display = 'none';
-    }
-});
-
-// ⭐️ 11. 특정 대화 내역 불러오기 함수 (신규)
-async function loadChatHistory(sessionId) {
-    if (!sessionId) return;
-
-    // ⭐️ (디버깅) F12(개발자 도구) 콘솔에 이 로그가 찍히는지 확인
-    console.log(`[DEBUG] loadChatHistory 호출됨! Session ID: ${sessionId}`);
-
-    // ⭐️ 1. 로더(프로그레스바) 보이기
-    const loader = document.getElementById('loader-overlay');
-    loader.style.display = 'flex';
-    
-    try {
-        // 백엔드에서 메시지 목록 가져오기 (⭐️ API_MESSAGES_URL은 실제 경로로 변경)
-        const response = await fetch(`/api/messages/${sessionId}`, {
-            headers: { 'Authorization': 'Bearer ' + authToken } // ⭐️ TEMP_AUTH_TOKEN -> authToken
-        });
-        if (!response.ok) throw new Error('대화 내역 로드 실패');
-        
-        const messages = await response.json(); // [{role: 'user', content: '...'}, ...]
-        
-        chatBody.innerHTML = ''; // 현재 챗봇창 비우기
-        chatBody.appendChild(chatBottomSpacer);
-        
-        messages.forEach(msg => {
-            const senderType = (msg.role === 'user') ? 'sent' : 'received';
-            const messageElement = createMessageElement(msg.content, senderType);
-            chatBody.insertBefore(messageElement, chatBottomSpacer);
-        });
-        
-        currentSessionId = sessionId; // ⭐️ 현재 세션을 이 ID로 설정
-        historyModal.style.display = 'none'; // 모달 닫기
-        resetButton.style.display = 'flex'; // 홈 버튼 표시
-        scrollToBottom();
-        
-    } catch (error) {
-        console.error('Error loading chat messages:', error);
-        alert('대화 내역을 불러오는 데 실패했습니다.');
-    } finally {
-        // ⭐️ 2. 로딩이 성공하든 실패하든, 로더 숨기기
-        loader.style.display = 'none';
-    }
 }
