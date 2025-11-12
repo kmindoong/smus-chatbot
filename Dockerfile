@@ -2,22 +2,16 @@
 FROM python:3.12-slim
 
 # 2. 작업 디렉토리 설정
-WORKDIR /app
+WORKDIR /code
 
 # 3. Python 의존성 설치
-# (requirements.txt가 있다면)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-# (Poetry를 사용한다면)
-# COPY pyproject.toml poetry.lock* ./
-# RUN pip install poetry && poetry export -f requirements.txt | pip install -r /dev/stdin
+# requirements.txt 먼저 복사 및 설치 (이것이 Docker 캐시 활용의 핵심)
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-# (임시: 의존성 파일이 없다면 FastAPI/Uvicorn/Boto3 등 설치)
-# RUN pip install --no-cache-dir "fastapi[all]" "boto3" "uvicorn[standard]" "python-jose[cryptography]" "pydantic-settings" "requests"
-
-# 4. 앱 소스코드 복사
-# (main.py, config.py 등이 app/ 폴더 안에 있으므로 app 폴더를 통째로 복사)
-COPY ./app /app/app
+# 4. ⭐️ [중요] 'app' 폴더 전체를 이미지 안으로 복사
+#    (app/main.py, app/frontend/*, app/api/* 등이 모두 복사됨)
+COPY ./app /code/app
 
 # 5. Uvicorn 서버 실행
 # --host 0.0.0.0 은 컨테이너 외부에서 접근하기 위해 필수

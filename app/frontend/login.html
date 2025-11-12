@@ -15,6 +15,19 @@
         .login-box input { width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
         .login-box button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
         #error-message { color: red; font-size: 0.9em; }
+        
+        /* 새 비밀번호 입력란 (평소엔 숨김) */
+        #new-password-section {
+            display: none;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        /* 'name' 입력란 (평소엔 숨김) */
+        #name-input-section {
+            display: none; 
+        }
     </style>
 </head>
 <body>
@@ -23,17 +36,36 @@
         <div id="error-message"></div>
         <div>
             <label for="username">사용자 ID:</label>
-            <input type="text" id="username" value="mjkwon"> 
+            <input type="text" id="username"> 
         </div>
         <div>
             <label for="password">비밀번호:</label>
             <input type="password" id="password">
         </div>
+        
+        <div id="new-password-section">
+            <p style="font-weight: bold; color: #d9534f;">임시 비밀번호입니다. 새 비밀번호를 설정하세요.</p>
+            <!-- ⭐️ [신규] 'name' 속성 입력란 -->
+            <div id="name-input-section">
+                <label for="attr-name">이름 (필수):</label>
+                <input type="text" id="attr-name">
+            </div>
+            <!-- ⭐️ [끝] -->
+            <div>
+                <label for="new-password">새 비밀번호:</label>
+                <input type="password" id="new-password">
+            </div>
+            <div>
+                <label for="confirm-password">새 비밀번호 확인:</label>
+                <input type="password" id="confirm-password">
+            </div>
+        </div>
+        
         <button id="login-button">로그인</button>
     </div>
 
     <script>
-        // 1. Cognito User Pool 정보 설정
+        // --- 1. Cognito 설정 및 요소 가져오기 ---
         const poolData = {
             UserPoolId: 'ap-northeast-2_2BgkWEhXE',
             ClientId: '7gilt6es9nfhq7eud203t4bq7n'
@@ -44,45 +76,114 @@
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const errorMessage = document.getElementById('error-message');
+        
+        const newPasswordSection = document.getElementById('new-password-section');
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        
+        const nameInputSection = document.getElementById('name-input-section');
+        const nameInput = document.getElementById('attr-name');
 
-        // 2. 로그인 버튼 클릭 시
+        // 비밀번호 변경 상태를 저장할 변수
+        let cognitoUserForPasswordChange = null;
+        let attributesForPasswordChange = null; // ⭐️ 속성 저장용 변수
+
+        // --- 2. 로그인 버튼 클릭 이벤트 리스너 (수정) ---
         loginButton.addEventListener('click', () => {
-            const username = usernameInput.value;
-            const password = passwordInput.value;
             errorMessage.textContent = "";
+            const username = usernameInput.value;
+            const password = passwordInput.value; 
 
-            const authenticationData = {
-                Username: username,
-                Password: password,
-            };
-            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-            
-            const userData = {
-                Username: username,
-                Pool: userPool
-            };
-            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+            // ⭐️ [분기 1] 새 비밀번호 변경 모드일 때
+            if (cognitoUserForPasswordChange) {
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
 
-            // 3. Cognito에 인증 시도
-            cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: (session) => {
-                    console.log('Authentication successful');
+                if (!newPassword || newPassword !== confirmPassword) {
+                    errorMessage.textContent = '새 비밀번호가 일치하지 않습니다.';
+                    return;
+                }
+                
+                // ⭐️ [수정] 'name' 속성이 보이는 상태(필수)일 때만 값을 가져옴
+                if (nameInputSection.style.display === 'block') {
+                    const requiredName = nameInput.value.trim();
+                    if (!requiredName) {
+                        errorMessage.textContent = '필수 속성(이름)을 입력해야 합니다.';
+                        return;
+                    }
+                    // ⭐️ [수정] 빈 객체였던 attributesForPasswordChange에 'name'만 추가
+                    attributesForPasswordChange['name'] = requiredName;
+                }
+
+                // ⭐️ Cognito에 새 비밀번호 + (name이 포함된) 속성 전송
+                cognitoUserForPasswordChange.completeNewPasswordChallenge(newPassword, attributesForPasswordChange, {
+                    onSuccess: (session) => {
+                        console.log('Password changed successfully');
+                        errorMessage.textContent = '비밀번호가 성공적으로 변경되었습니다. 새 비밀번호로 다시 로그인하세요.';
+                        
+                        // 폼 리셋
+                        passwordInput.value = '';
+                        newPasswordInput.value = '';
+                        confirmPasswordInput.value = '';
+                        nameInput.value = '';
+                        newPasswordSection.style.display = 'none';
+                        nameInputSection.style.display = 'none';
+                        loginButton.textContent = '로그인';
+                        cognitoUserForPasswordChange = null;
+                        attributesForPasswordChange = null;
+                    },
+                    onFailure: (err) => {
+                        console.error('Error changing password:', err);
+                        errorMessage.textContent = '비밀번호 변경 실패: ' + err.message;
+                    }
+                });
+
+            } 
+            // ⭐️ [분기 2] 일반 로그인 모드일 때
+            else {
+                const authenticationData = { Username: username, Password: password };
+                const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+                const userData = { Username: username, Pool: userPool };
+                const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+                // 3. Cognito에 인증 시도
+                cognitoUser.authenticateUser(authenticationDetails, {
+                    onSuccess: (session) => {
+                        console.log('onSuccess: 로그인에 성공했습니다.');
+                        const idToken = session.getIdToken().getJwtToken();
+                        localStorage.setItem('CognitoIdToken', idToken);
+                        window.location.href = 'index.html'; 
+                    },
+                    onFailure: (err) => {
+                        console.error('onFailure: 로그인 실패!', err);
+                        errorMessage.textContent = '로그인 실패: ' + err.message;
+                    },
                     
-                    // 4. 로그인 성공 시 ID 토큰(JWT)을 가져옴
-                    const idToken = session.getIdToken().getJwtToken();
-
-                    // 5. ⭐️ 토큰을 localStorage에 저장
-                    localStorage.setItem('CognitoIdToken', idToken);
-                    
-                    // 6. ⭐️ index.html로 이동 (상대 경로 사용)
-                    window.location.href = 'index.html'; 
-
-                },
-                onFailure: (err) => {
-                    console.error('Error signing in:', err);
-                    errorMessage.textContent = '로그인 실패: ' + err.message;
-                },
-            });
+                    // ⭐️⭐️ [수정] newPasswordRequired 콜백 처리 ⭐️⭐️
+                    newPasswordRequired: (userAttributes, requiredAttributes) => {
+                        console.log('New password required');
+                        
+                        newPasswordSection.style.display = 'block';
+                        loginButton.textContent = '새 비밀번호 설정';
+                        cognitoUserForPasswordChange = cognitoUser;
+                        
+                        // ⭐️ [수정] attributesForPasswordChange를 빈 객체로 초기화합니다.
+                        // (이전 코드에서는 userAttributes를 통째로 할당해서 'email'이 포함됨)
+                        attributesForPasswordChange = {}; 
+                        
+                        // ⭐️ 'name'이 필수(required)인지 확인하고 입력란을 표시합니다.
+                        if (requiredAttributes.includes('name')) {
+                            console.log("Cognito requires 'name' attribute.");
+                            nameInputSection.style.display = 'block';
+                            
+                            // 만약 'name'이 userAttributes에 이미 있다면 (드문 경우) 미리 채워줍니다.
+                            if (userAttributes && userAttributes.name) {
+                                nameInput.value = userAttributes.name;
+                            }
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
