@@ -1,381 +1,396 @@
-html, body {
-    /* 뷰포트를 넘어가는 모든 내용을 숨기고 스크롤바를 강제로 제거합니다. */
-    overflow: hidden; 
-    
-    /* 브라우저의 기본 여백(margin)을 제거하여 스크롤바가 생길 원인을 차단합니다. */
-    margin: 0;
-    padding: 0;
-
-    /* 너비와 높이를 뷰포트에 꽉 맞춥니다. */
-    width: 100%;
-    height: 100%;
-}
-
-/* --- 1. 기본 및 공용 스타일 --- */
-html {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    height: 100%;
-}
-/* index.html의 메인 페이지 (다크 모드 기본) */
+/* 차분하고 절제된 Enterprise 디자인 */
+html,
 body {
-    margin: 0;
-    padding: 20px;
-    background-color: #121212; 
-    color: #e0e0e0;
-    height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
-/* chatbot.html의 body */
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #f5f5f5;
+  color: #333333;
+  height: 100%;
+}
+
 body.chatbot-body {
-    margin: 0;
-    padding: 0;
-    background-color: transparent;
-    height: 100%; 
-    color: #212529;
-    transition: background-color 0.3s, color 0.3s;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  height: 100%;
+  color: #333333;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* --- 2. index.html 스타일 (iframe, 플로팅 버튼) --- */
+/* --- 플로팅 버튼 --- */
 #chatbot-frame {
-    position: fixed;
-    right: 20px;
-    bottom: 80px;
-    width: 350px;
-    height: 550px; 
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: opacity 0.3s, transform 0.3s;
-    overflow: hidden;
+  position: fixed;
+  right: 24px;
+  bottom: 100px;
+  width: 400px;
+  height: 640px;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  overflow: hidden;
 }
+
 #chatbot-frame.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
-/* 3개 플로팅 버튼 공통 스타일 */
+
 .chatbot-toggle-button {
-    position: fixed;
-    bottom: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background-color: transparent; 
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-    z-index: 100;
+  position: fixed;
+  bottom: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  /* 차분한 회색으로 변경 */
+  background: #4a5568;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 100;
 }
+
 .chatbot-toggle-button:hover {
-    background-color: #0056b3;
+  /* 호버시 미묘한 변화 */
+  background: #2d3748;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.1);
 }
-#chatbot-toggle-button-right { right: 20px; }
-#chatbot-toggle-button-left { left: 20px; }
-#chatbot-toggle-button-center {
-    left: 50%;
-    transform: translateX(-50%);
+
+#chatbot-toggle-button-right {
+  right: 24px;
 }
+
 .chatbot-toggle-button img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-
-/* --- 3. chatbot.html 내부 스타일 (라이트 모드 - 기본) --- */
+/* --- 채팅 컨테이너 --- */
 .chat-container {
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: background-color 0.3s, border-color 0.3s;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-/* 3-1. 헤더 */
+/* --- 헤더 --- */
 .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    flex-shrink: 0;
-    transition: background-color 0.3s, border-color 0.3s;
-    position: relative; /* ⭐️ 이 줄을 추가하세요 ⭐️ */
-}
-.chat-header .title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #343a40;
-    transition: color 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  /* 화이트 배경에 미묘한 보더 */
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+  transition: all 0.2s;
 }
 
-/* ⭐️ [신규] Agent 선택 Select 박스 스타일 */
 .agent-selector {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #343a40;
-    background-color: transparent;
-    border: none;
-    padding-right: 20px; /* 화살표 공간 */
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-    /* ⭐️ Select 화살표 아이콘 (간단한 CSS로) */
-    background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.2rem center;
-    background-size: 0.9em;
-    max-width: 150px; /* ⭐️ 헤더가 깨지지 않도록 최대 너비 제한 */
+  font-size: 15px;
+  font-weight: 600;
+  /* 차분한 회색 텍스트 */
+  color: #374151;
+  letter-spacing: -0.01em;
+  background-color: transparent;
+  border: none;
+  padding-right: 20px;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 14px;
+  transition: color 0.2s;
 }
+
 .agent-selector:focus {
-    outline: none;
+  outline: none;
 }
-/* 다크 모드 Select 스타일 */
-body.dark-mode .agent-selector {
-    color: #f1f1f1;
-    background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f1f1f1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-}
-/* ⭐️ [끝] */
 
-/* [최종] 툴팁 기준점을 위해 position: relative 추가 */
 .chat-header .icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    color: #868e96;
-    background-color: transparent;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
-    position: relative; /* 툴팁 기준점 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
+
 .chat-header .icon-button:hover {
-    background-color: #e9ecef;
-    color: #495057;
+  background-color: #f3f4f6;
+  color: #374151;
 }
 
-/* [최종] 테마 아이콘 (해/달) 교체 로직 */
-.theme-icon { display: none; }
-.theme-icon.icon-moon { display: block; } /* 라이트 모드(기본): 달(🌙) 보임 */
-body.dark-mode .theme-icon.icon-sun { display: block; } /* 다크 모드: 해(☀️) 보임 */
-body.dark-mode .theme-icon.icon-moon { display: none; } /* 다크 모드: 달(🌙) 숨김 */
-
-/* [최종] 툴팁(title) 스타일링 (대부분 버튼) */
-.icon-button[title]:hover::after,
-.send-button[title]:hover::after,
-.copy-button[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -32px; /* 버튼 아래에 표시 */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    z-index: 100;
-    pointer-events: none;
+.theme-icon {
+  display: none;
 }
-/* [최종] 홈 버튼 툴팁만 '위로' 표시 */
-.reset-chat[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    top: -32px; /* 버튼 위에 표시 */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    z-index: 100;
-    pointer-events: none;
+.theme-icon.icon-moon {
+  display: block;
 }
-/* 복사 버튼 툴팁 위치 미세조정 */
-.copy-button[title]:hover::after {
-    bottom: -30px;
-    font-size: 0.75rem;
+body.dark-mode .theme-icon.icon-sun {
+  display: block;
+}
+body.dark-mode .theme-icon.icon-moon {
+  display: none;
 }
 
-/* 3-2. 메시지 영역 */
+/* --- 메시지 영역 --- */
 .chat-body {
-    flex-grow: 1;
-    padding: 16px;
-    overflow-y: auto;
-    background-color: #ffffff;
-    transition: background-color 0.3s;
+  flex-grow: 1;
+  padding: 24px;
+  overflow-y: auto;
+  /* 연한 회색 배경 */
+  background-color: #fafafa;
+  transition: background-color 0.2s;
 }
 
 .message {
-    border-radius: 18px;
-    max-width: 80%;
-    line-height: 1.5;
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-    word-wrap: break-word;
+  border-radius: 12px;
+  max-width: 85%;
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 12px;
+  word-wrap: break-word;
 }
+
 .message.received {
-    background-color: #f1f3f5;
-    color: #343a40;
-    border-bottom-left-radius: 4px;
-    align-self: flex-start;
-    padding: 10px 14px;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
+  /* 화이트 배경에 미묘한 보더 */
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  padding: 12px 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
+
 .message.sent {
-    background-color: #007bff;
-    color: #ffffff;
-    border-bottom-right-radius: 4px;
-    margin-left: auto;
-    align-self: flex-end;
-    padding: 10px 14px;
+  /* 차분한 회색 배경 */
+  background: #4a5568;
+  color: #ffffff;
+  border: none;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+  align-self: flex-end;
+  padding: 12px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .message.error {
-    background-color: #ffe3e3;
-    color: #d90429;
-    border-bottom-left-radius: 4px;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-bottom-left-radius: 4px;
 }
+
 .message-content-wrapper {
-    display: flex;
-    align-items: flex-end;
-    flex-grow: 1;
-    gap: 8px;
-    position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex-grow: 1;
+  gap: 8px;
 }
+
 .message .message-text {
-    flex-grow: 1;
-    word-break: break-word;
+  flex-grow: 1;
+  word-break: break-word;
 }
 
-/* 3-3. 퀵 리플라이 (자주하는 질문) */
+/* --- 퀵 리플라이 --- */
 .quick-reply-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
 }
+
 .quick-reply {
-    background-color: #ffffff;
-    border: 1px solid #007bff;
-    color: #007bff;
-    padding: 10px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-align: left;
-    transition: background-color 0.2s, color 0.2s;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.15s ease;
 }
+
 .quick-reply:hover {
-    background-color: #f0f7ff;
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateX(2px);
 }
 
-/* 3-4. 하단 입력 */
+/* --- 입력 영역 --- */
 .chat-footer {
-    display: flex;
-    padding: 12px;
-    border-top: 1px solid #e9ecef;
-    background-color: #f8f9fa;
-    flex-shrink: 0;
-    transition: background-color 0.3s, border-color 0.3s;
+  display: flex;
+  padding: 18px 24px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  transition: background-color 0.2s, border-color 0.2s;
 }
+
 .chat-input {
-    flex-grow: 1;
-    border: 1px solid #ced4da;
-    background-color: #ffffff;
-    color: #495057;
-    border-radius: 20px;
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    margin-right: 8px;
-    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+  flex-grow: 1;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  color: #374151;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 15px;
+  margin-right: 10px;
+  transition: all 0.15s ease;
 }
+
 .chat-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+  outline: none;
+  border-color: #9ca3af;
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.1);
 }
+
 .send-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative; /* 툴팁 기준점 */
+  /* 차분한 회색 버튼 */
+  background: #4a5568;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .send-button:hover {
-    background-color: #0056b3;
-}
-.send-button svg {
-    margin-left: -2px; 
+  background: #2d3748;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* --- 4. 다크 모드 스타일 --- */
-body.dark-mode .chat-container { background-color: #2c2c2c; border-color: #444; }
-body.dark-mode .chat-header { background-color: #333333; border-bottom-color: #444; }
-body.dark-mode .chat-header .title { color: #f1f1f1; }
-body.dark-mode .chat-header .icon-button { color: #b0b0b0; }
-body.dark-mode .chat-header .icon-button:hover { background-color: #444; color: #ffffff; }
-body.dark-mode .chat-body { background-color: #2c2c2c; }
-body.dark-mode .message.received { background-color: #3b3b3b; color: #e0e0e0; }
-body.dark-mode .message.sent { background-color: #007bff; color: #ffffff; }
-body.dark-mode .message.error { background-color: #5c1a22; color: #ffbaba; }
-body.dark-mode .quick-reply { background-color: #3b3b3b; border-color: #007bff; color: #4dabf7; }
-body.dark-mode .quick-reply:hover { background-color: #444; }
-body.dark-mode .chat-footer { background-color: #333333; border-top-color: #444; }
-body.dark-mode .chat-input { border-color: #555; background-color: #2c2c2c; color: #f1f1f1; }
-body.dark-mode .chat-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,.25); }
+/* --- 다크 모드 --- */
+/* 다크모드 색상 대비 개선 및 가독성 향상 */
+body.dark-mode .chat-container {
+  background-color: #2a2e35;
+  border-color: #3d4450;
+}
+body.dark-mode .chat-header {
+  background: #33373e;
+  border-bottom-color: #3d4450;
+}
+body.dark-mode .agent-selector {
+  color: #f0f0f0;
+  background-image: url("data:image/svg+xml;charset=UTF8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f0f0f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+body.dark-mode .chat-header .icon-button {
+  color: #c5c9d0;
+}
+body.dark-mode .chat-header .icon-button:hover {
+  background-color: #3d4450;
+  color: #f0f0f0;
+}
+body.dark-mode .chat-body {
+  background-color: #232830;
+}
+body.dark-mode .message.received {
+  background-color: #33373e;
+  color: #f0f0f0;
+  border-color: #3d4450;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+body.dark-mode .message.sent {
+  background: #4a5568;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+body.dark-mode .quick-reply {
+  background-color: #33373e;
+  border-color: #3d4450;
+  color: #f0f0f0;
+}
+body.dark-mode .quick-reply:hover {
+  background-color: #3d4450;
+  border-color: #4a5568;
+}
+body.dark-mode .chat-footer {
+  background-color: #33373e;
+  border-top-color: #3d4450;
+}
+body.dark-mode .chat-input {
+  border-color: #3d4450;
+  background-color: #232830;
+  color: #f0f0f0;
+}
+body.dark-mode .chat-input::placeholder {
+  color: #8b92a0;
+}
+body.dark-mode .chat-input:focus {
+  border-color: #5a6270;
+  box-shadow: 0 0 0 3px rgba(90, 98, 112, 0.2);
+}
 
-/* --- 5. 타이핑 인디케이터 (스트리밍용) --- */
-/* --- 로딩 인디케이터 (타이핑 효과) CSS --- */
+/* --- 타이핑 인디케이터 --- */
 .typing-indicator {
   display: flex;
-  padding: 10px 15px;
+  padding-top: 4px;
 }
 
 .typing-indicator span {
-    width: 8px;
-    height: 8px;
-    background-color: #999; /* 챗봇 UI에 맞춰 색상 변경 가능 */
-    border-radius: 50%;
-    margin: 0 2px;
-    animation: typing-bounce 1.4s infinite;
+  width: 6px;
+  height: 6px;
+  background-color: #9ca3af;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: typing-bounce 1.4s infinite;
 }
-/* 애니메이션 딜레이 */
+
 .typing-indicator span:nth-child(2) {
   animation-delay: 0.2s;
 }
@@ -384,394 +399,353 @@ body.dark-mode .chat-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px 
 }
 
 @keyframes typing-bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
   40% {
-    transform: scale(1.0);
+    transform: scale(1);
   }
 }
-body.dark-mode .typing-indicator span { background-color: #b0b0b0; }
-.typing-indicator span:nth-child(1) { animation-delay: 0.0s; }
-.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typing-blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
 
-/* --- 6. '첫 화면' 홈 버튼 (중앙 정렬) --- */
+/* --- 홈 버튼 --- */
 .reset-chat {
-    display: none;
-    position: absolute;
-    bottom: 70px; /* 푸터(입력창) 위 */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ffffff;
-    color: #868e96;
-    border: 1px solid #dee2e6;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: all 0.2s;
-    margin-top: 10px;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
+  display: none;
+  position: absolute;
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4a5568;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
-.reset-chat:hover { background-color: #f8f9fa; color: #343a40; }
-body.dark-mode .reset-chat { background-color: #3b3b3b; color: #b0b0b0; border-color: #555; }
-body.dark-mode .reset-chat:hover { background-color: #444; color: #ffffff; }
 
-/* --- 7. 복사 버튼 (Gemini 스타일) --- */
+.reset-chat:hover {
+  background-color: #2d3748;
+  transform: translateX(-50%) translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* --- 복사 버튼 --- */
 .message .copy-button {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    background-color: #e9ecef;
-    border: none;
-    border-radius: 50%;
-    color: #495057;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s, background-color 0.2s, color 0.2s;
-    position: relative; /* 툴팁 기준점 */
-
-    margin-left: auto; /* ⭐️ 3. (신규) 텍스트와 분리하여 강제로 우측 정렬 */
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.15s ease;
+  margin-left: auto;
 }
-.message.received:hover .copy-button { opacity: 1; }
-.message .copy-button:hover { background-color: #dee2e6; color: #212529; }
+
+.message.received:hover .copy-button {
+  opacity: 1;
+}
+.message .copy-button:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
 .message .copy-button.copied {
-    background-color: #d4edda;
-    color: #28a745;
-    opacity: 1;
+  background-color: #d1fae5;
+  color: #047857;
+  opacity: 1;
 }
-body.dark-mode .message .copy-button { background-color: #495057; color: #ced4da; }
-body.dark-mode .message .copy-button:hover { background-color: #6c757d; color: #f8f9fa; }
-body.dark-mode .message .copy-button.copied { background-color: #2e5934; color: #66bb6a; }
 
-/* 모달 뒷배경 (검은색 반투명) */
+body.dark-mode .message .copy-button {
+  background-color: #3d4450;
+  color: #c5c9d0;
+}
+body.dark-mode .message .copy-button:hover {
+  background-color: #4a5568;
+  color: #f0f0f0;
+}
+body.dark-mode .message .copy-button.copied {
+  background-color: #065f46;
+  color: #6ee7b7;
+}
+
+/* --- 이전 대화 모달 --- */
 .modal-overlay {
-    display: none; /* 평소에는 숨김 */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px); /* 뒷배경 흐리게 */
-    animation: fadeIn 0.3s;
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s;
 }
 
-/* 모달 본체 (흰색 박스) */
 .modal-content {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    margin: 15% auto; /* 화면 중앙에 */
-    padding: 24px;
-    width: 90%;
-    max-width: 450px;
-    position: relative;
-    animation: slideDown 0.4s;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 16px 48px rgba(0, 0, 0, 0.08);
+  margin: 10% auto;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
+  animation: slideDown 0.2s;
 }
 
-/* 모달 닫기 버튼 (X) */
 .modal-close {
-    color: #aaa;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-.modal-close:hover,
-.modal-close:focus {
-    color: #333;
+  color: #6b7280;
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.15s;
 }
 
-/* 모달 제목 */
+.modal-close:hover {
+  color: #374151;
+}
+
 .modal-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.25rem;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
 }
 
-/* 대화 목록 리스트 */
 #history-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 320px;
+  overflow-y: auto;
 }
 
-/* ⭐️ li 태그의 기존 스타일을 수정 (flexbox로 변경) */
 #history-list li {
-    padding: 12px 10px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    /* ⭐️ 아래 3줄 추가 */
-    display: flex;
-    flex-direction: column; /* 세로로 쌓기 */
-    gap: 4px; /* 제목과 시간 사이 간격 */
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 8px;
+  margin-bottom: 4px;
 }
 
-#history-list li:last-child {
-    border-bottom: none;
-}
 #history-list li:hover {
-    background-color: #f9f9f9;
+  background-color: #f9fafb;
 }
 
-/* ⭐️ 제목 스타일 (신규) */
 .history-title {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #333;
-    /* 텍스트가 길어지면 ... 처리 */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ⭐️ 시간 스타일 (신규) */
 .history-time {
-    font-size: 0.85rem;
-    color: #888;
+  font-size: 13px;
+  color: #6b7280;
 }
 
-/* ⭐️ 8-1. 이전 대화 모달 다크 모드 (신규) ⭐️ */
-
-/* 모달 본체 (배경/그림자) */
 body.dark-mode .modal-content {
-    background-color: #3b3b3b; /* 어두운 배경 */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  background-color: #33373e;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 16px 48px rgba(0, 0, 0, 0.4);
 }
-
-/* 모달 닫기 버튼 (X) */
 body.dark-mode .modal-close {
-    color: #aaa;
+  color: #c5c9d0;
 }
-body.dark-mode .modal-close:hover,
-body.dark-mode .modal-close:focus {
-    color: #eee;
+body.dark-mode .modal-close:hover {
+  color: #f0f0f0;
 }
-
-/* 모달 제목 (글자색/테두리) */
 body.dark-mode .modal-content h2 {
-    color: #f1f1f1;
-    border-bottom-color: #555;
+  color: #f0f0f0;
+  border-bottom-color: #3d4450;
 }
-
-/* (다크 모드 스타일) */
 body.dark-mode #history-list li {
-    border-bottom-color: #444;
+  border-bottom-color: #3d4450;
 }
 body.dark-mode #history-list li:hover {
-    background-color: #333;
+  background-color: #3d4450;
 }
 body.dark-mode .history-title {
-    color: #f1f1f1;
+  color: #f0f0f0;
 }
 body.dark-mode .history-time {
-    color: #aaa;
+  color: #9ca3af;
 }
 
-/* 모달 애니메이션 */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes slideDown {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* --- 이전 대화 버튼 --- */
 .prev-chat-button {
-    /* ⭐️ 1. 배경/색상 (어둡게) */
-    background-color: #495057;
-    color: #f8f9fa;
-    
-    /* ⭐️ 2. 폰트/정렬 (가운데 정렬 및 크기 수정) */
-    font-size: 0.8rem; /* 폰트 크기 작게 */
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* ⭐️ 3. 레이아웃 (position 제거) */
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-    margin-right: 8px; /* ⭐️ 오른쪽 아이콘 그룹과의 간격 */
-    
-    /* ⭐️ 아래 4줄 삭제 (position: absolute 및 관련 속성) */
-    /* position: absolute;  <- 삭제 */
-    /* left: 100px;         <- 삭제 */
-    /* top: 50%;            <- 삭제 */
-    /* transform: translateY(-50%); <- 삭제 */
+  background-color: transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-right: 8px;
 }
 
 .prev-chat-button:hover {
-    background-color: #343a40;
-    color: #ffffff;
+  background-color: #f3f4f6;
+  color: #374151;
 }
 
 .prev-chat-button i {
-    margin-right: 5px;
-    color: #f8f9fa;
+  margin-right: 6px;
 }
 
-.header-icons i {
-    font-size: 1.25rem;
-    color: #6c757d; /* ⭐️ 기존보다 조금 더 어둡게 또는 버튼과 비슷하게 */
-    margin-left: 15px;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.header-icons i:hover {
-    color: #495057; /* ⭐️ 호버 시 더 어둡게 */
-}
-
-/* ⭐️ 헤더 오른쪽 정렬용 그룹 (신규) ⭐️ */
 .header-right-group {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
-/* --- ⭐️ 중지 버튼 (빨간색) 스타일 (신규) --- */
+body.dark-mode .prev-chat-button {
+  color: #c5c9d0;
+}
+body.dark-mode .prev-chat-button:hover {
+  background-color: #3d4450;
+  color: #f0f0f0;
+}
+
+/* --- 중지 버튼 --- */
 .send-button.stop-button {
-    background-color: #dc3545; /* Bootstrap 'danger' 빨간색 */
-    color: white;
+  background: #6b7280;
 }
+
 .send-button.stop-button:hover {
-    background-color: #c82333; /* 더 어두운 빨간색 */
+  background: #4b5563;
 }
 
-/* --- 9. 전체 화면 로더 (이전 대화 로딩용) --- */
-
+/* --- 전체 화면 로더 --- */
 .loader-overlay {
-    display: none; /* ⭐️ 평소에는 숨김 */
-    position: absolute; /* 챗봇 컨테이너 기준 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 2000; /* 모달보다 위에 */
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
 }
+
 body.dark-mode .loader-overlay {
-    background-color: rgba(44, 44, 44, 0.8); /* 다크 모드 배경 */
+  background-color: rgba(35, 40, 48, 0.95);
 }
 
 .loader-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
 }
+
 body.dark-mode .loader-content {
-    color: #ddd;
+  color: #c5c9d0;
 }
 
 .loader-spinner {
-    width: 32px;
-    height: 32px;
-    border: 4px solid #f0f0f0;
-    border-top: 4px solid #007bff; /* 파란색 스피너 */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #4a5568;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
+
 body.dark-mode .loader-spinner {
-    border-color: #555;
-    border-top-color: #007bff;
+  border-color: #3d4450;
+  border-top-color: #9ca3af;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* --- 10. 답변 버블 내 중지 버튼 (신규) --- */
 .stop-generation-button {
-    flex-shrink: 0;
-    width: 25px;
-    height: 25px;
-    background-color: #dc3545; /* ⭐️ 진한 빨간색 배경 */
-    border: none;
-    border-radius: 50%;
-    color: #ffffff; /* ⭐️ 흰색 아이콘 */
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    position: relative; /* 툴팁 기준점 */
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background-color: #6b7280;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
 }
 
 .stop-generation-button:hover {
-    background-color: #c82333; /* ⭐️ 더 진한 빨간색 */
-    color: #ffffff; 
+  background-color: #4b5563;
 }
 
-/* 툴팁 (기존 .icon-button 툴팁과 유사하게) */
-.stop-generation-button[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    z-index: 100;
-    pointer-events: none;
-}
-
-/* --- 11. 로딩 버블 레이아웃 (신규) --- */
-
-/* ⭐️ 로딩 버블일 때만 세로로 쌓기 ⭐️ */
 .message.received.loading-bubble .message-content-wrapper {
-    flex-direction: column; /* ⭐️ 가로(row) -> 세로(column) */
-    align-items: flex-start; /* 왼쪽 정렬 */
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-/* ⭐️ 로딩 텍스트 (신규) ⭐️ */
-/* (createMessageElement가 .message-text를 사용하므로 기존 스타일이 적용됨) */
-
-/* ⭐️ 타이핑 인디케이터 패딩 수정 */
-.typing-indicator {
-    display: flex;
-    /* padding: 10px 15px; */ /* ⭐️ 패딩을 래퍼가 하도록 제거 */
-    padding-top: 5px; /* 텍스트와의 간격 */
-}
-
-/* ⭐️ 중지 버튼을 왼쪽 정렬 (신규) */
 .message.received.loading-bubble .stop-generation-button {
-    margin-top: 8px; /* 인디케이터와의 간격 */
-    margin-left: auto; /* ⭐️ (신규) 버튼을 오른쪽으로 밀어냄 */
+  margin-top: 8px;
+  margin-left: auto;
 }
