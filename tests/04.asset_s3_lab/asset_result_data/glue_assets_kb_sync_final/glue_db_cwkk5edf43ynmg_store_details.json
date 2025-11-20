@@ -1,0 +1,81 @@
+{
+  "unique_key": "glue_db_cwkk5edf43ynmg_store_details",
+  "metadata": {
+    "ResponseMetadata": {
+      "RequestId": "596c73ff-456a-43b8-975f-93038c49007d",
+      "HTTPStatusCode": 200,
+      "HTTPHeaders": {
+        "content-type": "application/json",
+        "content-length": "14545",
+        "connection": "keep-alive",
+        "date": "Thu, 20 Nov 2025 02:03:06 GMT",
+        "x-amzn-trace-id": "Root=1-691e76da-3b054c2939ed7cc877df0453",
+        "x-amzn-requestid": "596c73ff-456a-43b8-975f-93038c49007d",
+        "x-amz-apigw-id": "UUeCJH-BoE0EX9Q=",
+        "x-cache": "Miss from cloudfront",
+        "via": "1.1 a9b4d3b48eedb5e4a6371b17d76513da.cloudfront.net (CloudFront)",
+        "x-amz-cf-pop": "ICN57-P1",
+        "x-amz-cf-id": "FPDwKWdr2d5rqa6Efx85eRnjKH6Zyj4t7SD8qFpVUxtFhSR_4pyg_w=="
+      },
+      "RetryAttempts": 0
+    },
+    "createdAt": "2025-11-20 11:01:51.584000+09:00",
+    "createdBy": "SYSTEM",
+    "domainId": "dzd-3ojk7mnm02q5lk",
+    "externalIdentifier": "arn:aws:glue:ap-northeast-2:533616270150:table/glue_db_cwkk5edf43ynmg/store_details.cfwph3pdupwo48",
+    "firstRevisionCreatedAt": "2025-10-17 09:24:32.724000+09:00",
+    "firstRevisionCreatedBy": "SYSTEM",
+    "formsOutput": [
+      {
+        "content": "{\"tableDescription\":\"Table created from uploading data in SageMaker Unified Studio\",\"catalogId\":\"533616270150\",\"databaseName\":\"glue_db_cwkk5edf43ynmg\",\"columns\":[{\"dataType\":\"string\",\"columnName\":\"store_id\"},{\"dataType\":\"string\",\"columnName\":\"store_name\"},{\"dataType\":\"string\",\"columnName\":\"store_city\"},{\"dataType\":\"string\",\"columnName\":\"store_state\"},{\"dataType\":\"string\",\"columnName\":\"store_zip\"},{\"dataType\":\"string\",\"columnName\":\"store_open_date\"},{\"dataType\":\"string\",\"columnName\":\"store_closed_date\"}],\"sourceLocation\":\"s3://amazon-sagemaker-533616270150-ap-northeast-2-dec0c03cfb7b/dzd-3ojk7mnm02q5lk/bpj12bt3ajf4pk/dev/local-uploads/1760661081881/\",\"updateTime\":\"2025-10-17T00:31:44Z\",\"compressionType\":\"none\",\"region\":\"ap-northeast-2\",\"sourceClassification\":\"csv\",\"tableArn\":\"arn:aws:glue:ap-northeast-2:533616270150:table/glue_db_cwkk5edf43ynmg/store_details\",\"tableName\":\"store_details\"}",
+        "formName": "GlueTableForm",
+        "typeName": "amazon.datazone.GlueTableFormType",
+        "typeRevision": "10"
+      },
+      {
+        "content": "{\"dataSourceIdentifier\":{\"id\":\"3ikg0r64uumkyg\",\"version\":\"latest\"},\"filterableDataSourceId\":\"3ikg0r64uumkyg\",\"dataSourceType\":\"GLUE\"}",
+        "formName": "DataSourceReferenceForm",
+        "typeName": "amazon.datazone.DataSourceReferenceFormType",
+        "typeRevision": "3"
+      },
+      {
+        "content": "{\"approvalRequired\":\"YES\"}",
+        "formName": "SubscriptionTermsForm",
+        "typeName": "amazon.datazone.SubscriptionTermsFormType",
+        "typeRevision": "2"
+      },
+      {
+        "content": "{\"summary\":\"The \\\"store_details\\\" table captures key information about the retail store locations of a company or organization. The table includes a unique identifier for each store (\\\"store_id\\\"), the name of the store (\\\"store_name\\\"), the city (\\\"store_city\\\") and state (\\\"store_state\\\") in which the store is located, the store's postal code (\\\"store_zip\\\"), the date the store first opened for business (\\\"store_open_date\\\"), and the date the store was permanently closed, if applicable (\\\"store_closed_date\\\").\\n\\nThis data is highly relevant in a retail context, as it allows for the tracking and organization of store-level information, which can be crucial for understanding the performance, operations, and lifecycle of individual store locations. The geographic data, including the store's city, state, and postal code, provides additional context about the store's customer base and market, which can inform strategic decision-making around inventory management, delivery logistics, and customer targeting.\\n\\nThe combination of store-specific details, such as the name and opening/closing dates, with the geographic information can offer valuable insights to retail managers, marketers, and analysts. For example, they can use this data to analyze trends in store performance, identify patterns in store openings and closures, and understand how factors like location and market conditions may have influenced a store's success or failure. This information can inform decisions about future store expansion, optimization of the retail network, and targeted marketing campaigns.\\n\\n**Use Case**\\n\\nThe \\\"store_details\\\" table can be highly valuable for a wide range of retail-related use cases and end users. Retail managers and analysts can leverage this data to gain deeper insights into their store network, informing strategic decisions around store expansion, optimization, and performance management.\\n\\nThe store-specific details, such as the store name, opening and closing dates, and geographic information (city, state, zip code), can be used to analyze trends in store performance over time. This can help identify successful store formats, locations, and operational practices that can be replicated across the network. Conversely, the data on closed stores can provide valuable lessons on factors that may have contributed to a store's failure, enabling the organization to make more informed decisions about future investments.\\n\\nThe geographic data in the table can also support inventory management, delivery logistics, and customer targeting initiatives. Retail marketers can use the city, state, and zip code information to tailor their campaigns and promotional activities to the specific needs and preferences of the local customer base. This can lead to more effective customer engagement and increased sales.\\n\\nAdditionally, this table can be integrated with other retail data sources, such as sales, inventory, and customer data, to enable more comprehensive analyses. For example, retail data scientists and business intelligence professionals can combine the store-level information with sales data to identify correlations between store characteristics (e.g., location, opening/closing dates) and financial performance, informing strategic decisions and operational improvements.\\n\\nOverall, the \\\"store_details\\\" table can benefit a wide range of retail professionals, including store managers, regional and national retail executives, marketing teams, supply chain and logistics specialists, and data analysts.\",\"sourceIdentifier\":\"arn:aws:glue:ap-northeast-2:533616270150:table/glue_db_cwkk5edf43ynmg/store_details\"}",
+        "formName": "AssetCommonDetailsForm",
+        "typeName": "amazon.datazone.AssetCommonDetailsFormType",
+        "typeRevision": "3"
+      },
+      {
+        "content": "{\"columnsBusinessMetadata\":[{\"description\":\"A unique identifier for each retail store location, used for tracking and organizing store-level data.\",\"columnIdentifier\":\"store_id\"},{\"description\":\"The name of the retail store, which can be used to identify and differentiate between different store locations.\",\"columnIdentifier\":\"store_name\"},{\"description\":\"The city in which the retail store is located, providing geographic context for the store's operations and customer base.\",\"columnIdentifier\":\"store_city\"},{\"description\":\"The state or province in which the retail store is located, providing additional geographic context for the store's operations and customer base.\",\"columnIdentifier\":\"store_state\"},{\"description\":\"The postal code or zip code of the retail store's location, which can be used for various purposes such as inventory management, delivery logistics, and customer targeting.\",\"columnIdentifier\":\"store_zip\"},{\"description\":\"The date on which the retail store first opened for business, which can be used to analyze the store's performance over time and understand its maturity within the market.\",\"columnIdentifier\":\"store_open_date\"},{\"description\":\"The date on which the retail store was permanently closed, if applicable, which can be used to track the lifecycle of the store and understand changes in the retail network over time.\",\"columnIdentifier\":\"store_closed_date\"}]}",
+        "formName": "ColumnBusinessMetadataForm",
+        "typeName": "amazon.datazone.ColumnBusinessMetadataFormType",
+        "typeRevision": "4"
+      }
+    ],
+    "id": "arx30zxc0lyy6w",
+    "latestTimeSeriesDataPointFormsOutput": [],
+    "listing": {
+      "listingId": "btopy5i8w6dw60",
+      "listingStatus": "ACTIVE"
+    },
+    "name": "store_details",
+    "owningProjectId": "cfwph3pdupwo48",
+    "readOnlyFormsOutput": [
+      {
+        "content": "{\"fieldSuggestions\":[{\"fieldPath\":\"summary\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The \\\"store_details\\\" table captures key information about the retail store locations of a company or organization. The table includes a unique identifier for each store (\\\"store_id\\\"), the name of the store (\\\"store_name\\\"), the city (\\\"store_city\\\") and state (\\\"store_state\\\") in which the store is located, the store's postal code (\\\"store_zip\\\"), the date the store first opened for business (\\\"store_open_date\\\"), and the date the store was permanently closed, if applicable (\\\"store_closed_date\\\").\\n\\nThis data is highly relevant in a retail context, as it allows for the tracking and organization of store-level information, which can be crucial for understanding the performance, operations, and lifecycle of individual store locations. The geographic data, including the store's city, state, and postal code, provides additional context about the store's customer base and market, which can inform strategic decision-making around inventory management, delivery logistics, and customer targeting.\\n\\nThe combination of store-specific details, such as the name and opening/closing dates, with the geographic information can offer valuable insights to retail managers, marketers, and analysts. For example, they can use this data to analyze trends in store performance, identify patterns in store openings and closures, and understand how factors like location and market conditions may have influenced a store's success or failure. This information can inform decisions about future store expansion, optimization of the retail network, and targeted marketing campaigns.\\n\\n**Use Case**\\n\\nThe \\\"store_details\\\" table can be highly valuable for a wide range of retail-related use cases and end users. Retail managers and analysts can leverage this data to gain deeper insights into their store network, informing strategic decisions around store expansion, optimization, and performance management.\\n\\nThe store-specific details, such as the store name, opening and closing dates, and geographic information (city, state, zip code), can be used to analyze trends in store performance over time. This can help identify successful store formats, locations, and operational practices that can be replicated across the network. Conversely, the data on closed stores can provide valuable lessons on factors that may have contributed to a store's failure, enabling the organization to make more informed decisions about future investments.\\n\\nThe geographic data in the table can also support inventory management, delivery logistics, and customer targeting initiatives. Retail marketers can use the city, state, and zip code information to tailor their campaigns and promotional activities to the specific needs and preferences of the local customer base. This can lead to more effective customer engagement and increased sales.\\n\\nAdditionally, this table can be integrated with other retail data sources, such as sales, inventory, and customer data, to enable more comprehensive analyses. For example, retail data scientists and business intelligence professionals can combine the store-level information with sales data to identify correlations between store characteristics (e.g., location, opening/closing dates) and financial performance, informing strategic decisions and operational improvements.\\n\\nOverall, the \\\"store_details\\\" table can benefit a wide range of retail professionals, including store managers, regional and national retail executives, marketing teams, supply chain and logistics specialists, and data analysts.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[0].columnDescription\",\"originalValue\":\"store_id\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"A unique identifier for each retail store location, used for tracking and organizing store-level data.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[1].columnDescription\",\"originalValue\":\"store_name\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The name of the retail store, which can be used to identify and differentiate between different store locations.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[2].columnDescription\",\"originalValue\":\"store_city\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The city in which the retail store is located, providing geographic context for the store's operations and customer base.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[3].columnDescription\",\"originalValue\":\"store_state\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The state or province in which the retail store is located, providing additional geographic context for the store's operations and customer base.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[4].columnDescription\",\"originalValue\":\"store_zip\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The postal code or zip code of the retail store's location, which can be used for various purposes such as inventory management, delivery logistics, and customer targeting.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[5].columnDescription\",\"originalValue\":\"store_open_date\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The date on which the retail store first opened for business, which can be used to analyze the store's performance over time and understand its maturity within the market.\",\"status\":\"ACCEPTED\"}]},{\"formName\":\"GlueTableForm\",\"fieldPath\":\"columns[6].columnDescription\",\"originalValue\":\"store_closed_date\",\"suggestions\":[{\"operation\":\"ADD\",\"suggestionSource\":{\"sourceType\":\"DATAZONE_PREDICTION_JOB\"},\"value\":\"The date on which the retail store was permanently closed, if applicable, which can be used to track the lifecycle of the store and understand changes in the retail network over time.\",\"status\":\"ACCEPTED\"}]}]}",
+        "formName": "SuggestionForm",
+        "typeName": "amazon.datazone.SuggestionFormType",
+        "typeRevision": "2"
+      }
+    ],
+    "revision": "5",
+    "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+    "typeRevision": "14"
+  },
+  "updatedAt": "2025-11-20T02:01:51.584000Z"
+}

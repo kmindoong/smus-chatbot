@@ -1,0 +1,68 @@
+{
+  "unique_key": "cloudtrail_logs_s3_trail_events",
+  "metadata": {
+    "ResponseMetadata": {
+      "RequestId": "8159c1a7-6d08-426b-93c5-43bc58aa167a",
+      "HTTPStatusCode": 200,
+      "HTTPHeaders": {
+        "content-type": "application/json",
+        "content-length": "3619",
+        "connection": "keep-alive",
+        "date": "Thu, 20 Nov 2025 01:54:46 GMT",
+        "x-amzn-trace-id": "Root=1-691e74e6-211027a2101a671a7ac442bf",
+        "x-amzn-requestid": "8159c1a7-6d08-426b-93c5-43bc58aa167a",
+        "x-amz-apigw-id": "UUc0HFHyIE0EbZg=",
+        "x-cache": "Miss from cloudfront",
+        "via": "1.1 b865266708c3581850c42984c57fb07a.cloudfront.net (CloudFront)",
+        "x-amz-cf-pop": "ICN57-P1",
+        "x-amz-cf-id": "UtkXWZvDdXDO9M1f4rM6dErE3UP6oAn2ZqQ3_84q5HdO5fp12SiQ2A=="
+      },
+      "RetryAttempts": 0
+    },
+    "createdAt": "2025-10-17 08:27:03.260000+09:00",
+    "createdBy": "SYSTEM",
+    "domainId": "dzd-3ojk7mnm02q5lk",
+    "externalIdentifier": "arn:aws:glue:ap-northeast-2:533616270150:table/cloudtrail_logs/s3_trail_events.cfwph3pdupwo48",
+    "firstRevisionCreatedAt": "2025-10-17 08:27:03.260000+09:00",
+    "firstRevisionCreatedBy": "SYSTEM",
+    "formsOutput": [
+      {
+        "content": "{\"catalogId\":\"533616270150\",\"databaseName\":\"cloudtrail_logs\",\"columns\":[{\"dataType\":\"string\",\"columnName\":\"eventversion\"},{\"dataType\":\"struct<type:string,principalId:string,arn:string,accountId:string,accessKeyId:string,invokedBy:string,userName:string,sessionContext:struct<attributes:struct<mfaAuthenticated:string,creationDate:string>,sessionIssuer:struct<type:string,principalId:string,arn:string,accountId:string,userName:string>>>\",\"columnName\":\"useridentity\"},{\"dataType\":\"string\",\"columnName\":\"eventtime\"},{\"dataType\":\"string\",\"columnName\":\"eventsource\"},{\"dataType\":\"string\",\"columnName\":\"eventname\"},{\"dataType\":\"string\",\"columnName\":\"awsregion\"},{\"dataType\":\"string\",\"columnName\":\"sourceipaddress\"},{\"dataType\":\"string\",\"columnName\":\"useragent\"},{\"dataType\":\"string\",\"columnName\":\"requestparameters\"},{\"dataType\":\"string\",\"columnName\":\"responseelements\"},{\"dataType\":\"string\",\"columnName\":\"additionaleventdata\"},{\"dataType\":\"string\",\"columnName\":\"requestid\"},{\"dataType\":\"string\",\"columnName\":\"eventid\"},{\"dataType\":\"boolean\",\"columnName\":\"readonly\"},{\"dataType\":\"array<struct<ARN:string,accountId:string,type:string>>\",\"columnName\":\"resources\"},{\"dataType\":\"string\",\"columnName\":\"eventtype\"},{\"dataType\":\"boolean\",\"columnName\":\"managementevent\"},{\"dataType\":\"string\",\"columnName\":\"recipientaccountid\"},{\"dataType\":\"string\",\"columnName\":\"sharedeventid\"},{\"dataType\":\"string\",\"columnName\":\"eventcategory\"},{\"dataType\":\"struct<tlsVersion:string,cipherSuite:string,clientProvidedHostHeader:string>\",\"columnName\":\"tlsdetails\"}],\"sourceLocation\":\"s3://aws-cloudtrail-logs-533616270150-lsh/AWSLogs/533616270150/CloudTrail/ap-northeast-2\",\"updateTime\":\"2025-10-14T04:21:53Z\",\"region\":\"ap-northeast-2\",\"sourceClassification\":\"cloudtrail\",\"tableArn\":\"arn:aws:glue:ap-northeast-2:533616270150:table/cloudtrail_logs/s3_trail_events\",\"tableName\":\"s3_trail_events\"}",
+        "formName": "GlueTableForm",
+        "typeName": "amazon.datazone.GlueTableFormType",
+        "typeRevision": "10"
+      },
+      {
+        "content": "{\"dataSourceIdentifier\":{\"id\":\"3ikg0r64uumkyg\",\"version\":\"latest\"},\"filterableDataSourceId\":\"3ikg0r64uumkyg\",\"dataSourceRunId\":\"chp04vwekypme0\",\"dataSourceType\":\"GLUE\"}",
+        "formName": "DataSourceReferenceForm",
+        "typeName": "amazon.datazone.DataSourceReferenceFormType",
+        "typeRevision": "3"
+      },
+      {
+        "content": "{\"approvalRequired\":\"YES\"}",
+        "formName": "SubscriptionTermsForm",
+        "typeName": "amazon.datazone.SubscriptionTermsFormType",
+        "typeRevision": "2"
+      },
+      {
+        "content": "{\"sourceIdentifier\":\"arn:aws:glue:ap-northeast-2:533616270150:table/cloudtrail_logs/s3_trail_events\"}",
+        "formName": "AssetCommonDetailsForm",
+        "typeName": "amazon.datazone.AssetCommonDetailsFormType",
+        "typeRevision": "3"
+      }
+    ],
+    "id": "bgelfj2b2yh7a0",
+    "latestTimeSeriesDataPointFormsOutput": [],
+    "listing": {
+      "listingId": "5j8a1wzsssjgd4",
+      "listingStatus": "ACTIVE"
+    },
+    "name": "s3_trail_events",
+    "owningProjectId": "cfwph3pdupwo48",
+    "readOnlyFormsOutput": [],
+    "revision": "1",
+    "typeIdentifier": "amazon.datazone.GlueTableAssetType",
+    "typeRevision": "14"
+  },
+  "updatedAt": "2025-10-16T23:27:03.260000Z"
+}
